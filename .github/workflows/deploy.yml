@@ -37,6 +37,6 @@ jobs:
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: "allenjynroy-jyn-royston-44"
+          project: "allenjynroy-jyn-royston-66"
           entrypoint: "mod.ts"
           root: "build"

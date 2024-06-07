@@ -1,5 +1,5 @@
 <script>
-	import Counter from '$components/Counter.svelte';
+	import Header from '$components/Header.svelte';
 </script>
 
 <svelte:head>
@@ -7,13 +7,13 @@
 	<meta name="description" content="Allen 'Jyn' Royston - Fullstack developer for hire!" />
 </svelte:head>
 
-<section>
-	<h1 class="text-3xl font-bold underline">
-		Hello world!
-	</h1>
-	
-	<Counter />
-</section>
+<template lang="pug">
+	section
+		h1.is_green Jyn Royston
+		h3.is_green Developer for hire
+		h4.is_green +10 Years of Experience
+		h5.is_green Mystery Solver
+</template>
 
 <style lang="postcss">
 	section {
@@ -21,13 +21,7 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		flex: 0.6;
+		flex: flex-grow;
 		background-color: theme(colors.gray.400);
 	}
-
-	h1 {
-		width: 100%;
-	}
-
-
 </style>

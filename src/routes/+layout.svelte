@@ -1,53 +1,30 @@
-<script>
-	import Header from '$components/Header.svelte';
+<script lang='ts'>
 	import './styles.css';
+
+	import Drawers from '$components/Drawers.svelte'
+	import Header from '$components/Header.svelte';	
+	import Footer from '$components/Footer.svelte';	
+
+
 </script>
 
-<template lang="pug">
-	div.app
-		Header
 
-		main
-			slot
-		
-		footer
-			p Footer
-</template>
+<div id="component-container" class="flex flex-col h-screen w-screen bg-slate-900 overflow-hidden gap-1">
+	<Drawers />
 
+  <div id="hidden-content" class="hidden">
+		<Header />
+    <slot></slot>
+		<Footer />
+  </div>
+</div>
 
-<style lang="postcss">
-	.app {
-		display: flex;
-		flex-direction: column;
-		min-height: 100vh;
-	}
-
-	main {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		padding: 1rem;
-		width: 100%;
-		max-width: 64rem;
-		margin: 0 auto;
-		box-sizing: border-box;
-	}
-
-	footer {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		padding: 12px;
-	}
-
-	footer a {
-		font-weight: bold;
-	}
-
-	@media (min-width: 480px) {
-		footer {
-			padding: 12px 0;
-		}
-	}
+<style lang='postcss'>
+			body, html {
+					margin: 0;
+					padding: 0;
+					height: 100%;
+					font-family: Arial, sans-serif;
+			}
 </style>
+

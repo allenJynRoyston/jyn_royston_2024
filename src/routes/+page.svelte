@@ -9,10 +9,10 @@
 
 <template lang="pug">
 	section
-		h1.is_green Jyn Royston
-		h3.is_green Developer for hire
-		h4.is_green +10 Years of Experience
-		h5.is_green Mystery Solver
+		h1.is_highlight Jyn Royston
+		h2.is_body Developer for hire
+		h3.is_body +10 Years of Experience
+		h3.is_body Mystery Solver
 </template>
 
 <style lang="postcss">

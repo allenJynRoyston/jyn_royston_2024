@@ -1,92 +1,79 @@
 <script lang='ts'>
+  import { tick } from 'svelte'
   import { page } from '$app/stores';
+  import { linkColor, highlightColor, bodyColor } from '$stores/store'
 
-  export let dataset:Array<Object | Any> = []
+  import CodeFormat from '$components/CodeFormat.svelte'
 
-  let lines:Array<number> = new Array(100).fill(0)
+  export let dataset:Array<Object | any> = []
+
   var dataset_is_updated:boolean = false
-  
-  function get_dataset_tag(index:number):String {
-    return index in dataset ? dataset[index].tagName : ""
-  }
+  var render:boolean = true
 
-  function get_dataset_text(index:number):String {
-    return index in dataset ? `${dataset[index].stringWithoutTags === null ? "" : dataset[index].stringWithoutTags}` : ""
-  }
+  linkColor.subscribe(_val => {updateRender()})
+  highlightColor.subscribe(_val => {updateRender()})
+  bodyColor.subscribe(_val => {updateRender()})
 
-  function get_dataset_depth(index:number):number {
-    return index in dataset ? (dataset[index].depth) * 10 : 0
-  }
-
-  function is_green(index:number):boolean {
-    return index in dataset ? dataset[index].includedClasses.includes("is_green") : false
+  async function updateRender() {
+    render = false
+    await tick()
+    render = true
   }  
 
-  function is_link(index:number):boolean {
-    return index in dataset ? dataset[index].includedClasses.includes("is_link") : false
+  // ------
+  function get_dataset_text(data:any):string {
+    return data.stringWithoutTags === null ? "" : data.stringWithoutTags
+  }
+
+  // ------
+  function is_highlight(data:any):boolean {
+    return data.includedClasses.includes("is_highlight")
+  }  
+
+  function is_link(data:any):boolean {
+    return data.includedClasses.includes("is_link")
   }   
 
-  function is_text(index:number):boolean {
-    return index in dataset ? dataset[index].includedClasses.includes("is_text") : false
+  function is_body(data:any):boolean {
+    return data.includedClasses.includes("is_body")
   }     
   
-  function get_link(index:number):String {
-    return index in dataset ? dataset[index].linkTo : null
-  }     
+  // ------
+  function get_highlight_color(str:string = 'text'):string {
+    return `${str}-${$highlightColor.color}-${$highlightColor.weight}`
+  }  
+
+  function get_link_color(str:string = 'text'):string {
+    return `${str}-${$linkColor.color}-${$linkColor.weight}`
+  }
+
+  function get_body_color(str:string = 'text'):string {
+    return `${str}-${$bodyColor.color}-${$bodyColor.weight}`
+  }
+
 
   $: {
     dataset_is_updated = dataset.length > 0
   }
 
+
 </script>
 
-
-<div id="html-reader" class="absolute h-full w-full overflow-x-hidden overflow-y-auto p-2">
-  <ul class='flex flex-col gap-0'>
-    {#if dataset_is_updated}
-      {#each lines as _item, index}
-        {#if index > 0}
-          <li class="text-zinc-500 text-xs flex">
-            <span class='min-w-10 text-zinc-400 border-zinc-700 border-r'>
-              {index}
-            </span>
-            <span class='w-full' style="padding-left:{get_dataset_depth(index)}px"  >
-              {get_dataset_tag(index)}
-              {#if is_link(index)}
-                <a aria-current="{$page.url.pathname === '/' ? 'page' : undefined}" href="{get_link(index)}" class="text-blue-500 underline {is_green(index) ? "text-green-500" : ""}">{get_dataset_text(index)}</a>
-              {:else}
-                <span class="{is_link(index) ? "text-blue-500" : ""} {is_green(index) ? "text-green-500" : ""} {is_text(index) ? "text-white" : ""}">{get_dataset_text(index)}</span>
-              {/if}
-            </span>
-          </li>
-        {/if}
-      {/each}
-    {/if}
-  </ul>      
-</div>
-
-
-
-<style lang='postcss'>
-
-		/* Hide scrollbar */
-		::-webkit-scrollbar {
-			width: 5px; /* Adjust the width as needed */
-		}
-
-		/* Track */
-		::-webkit-scrollbar-track {
-			background: black; /* Make the scrollbar track transparent */
-		}
-
-		/* Handle */
-		::-webkit-scrollbar-thumb {
-			background: grey; /* Set the color of the inner bit to blue */
-			border-radius: 10px; /* Round the corners of the scrollbar thumb */
-		}
-
-		/* Handle on hover */
-		::-webkit-scrollbar-thumb:hover {
-			background: darkblue; /* Change the color of the inner bit on hover */
-		}
-</style>
+<CodeFormat>
+  {#if dataset_is_updated && render}
+    {#each dataset as data, index}
+      {#if index > 0}
+        <li class="text-neutral-500 text-xs flex ">
+          <span class='w-full' style="padding-left:{data.depth * 10}px"  >
+            {data.tagName}
+            {#if is_link(data)}
+              <a aria-current="{$page.url.pathname === '/' ? 'page' : undefined}" href="{data.linkTo}" class="{get_link_color()} underline {is_highlight(data) ? get_highlight_color() : ""}">{get_dataset_text(data)}</a>
+            {:else}
+              <span class="{is_highlight(data) ? get_highlight_color() : ""} {is_body(data) ? get_body_color() : ""}">{get_dataset_text(data)}</span>
+            {/if}
+          </span>
+        </li>
+      {/if}
+    {/each}
+  {/if}
+</CodeFormat>

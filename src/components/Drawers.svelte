@@ -1,13 +1,16 @@
 <script lang='ts'>
-	import {onMount} from 'svelte'
+	import {onMount, tick} from 'svelte'
+  import {drawerState} from '$stores/store'
   import { page } from '$app/stores';
 
 	import HTMLReader from '$components/HTMLReader.svelte';
   import CodeReader from '$components/CodeReader.svelte';
+  import StyleReader from '$components/StyleReader.svelte';
 
-	const section_classes:String = "relative p-0 transition-all duration-500 ease"
+	const section_classes:string = "relative p-0 transition-all duration-500 ease"
+  const button_classes:string = "absolute text-xs top-2 right-6 px-4 py-2 w-20 bg-blue-500 hover:bg-blue-700 text-white rounded-none"
 
-	let flex_states:Array<boolean> = [true, false, false];
+	// let flex_states:Array<boolean> = $drawerState;
 	let min_heights:Array<number> = [0, 0, 0]
 	let isAnimating:boolean = false;
 	let content_list:Array<Object> = []
@@ -22,11 +25,15 @@
 		is_mounted = true
 	})
 
+
+
 	// toggle function
-	function toggleFlex(index: number) {
-		if(!flex_states[index] && !isAnimating)
-			flex_states = flex_states.map((state, i) => (i === index ? !state : false));
+	function toggleFlex(index: number) {  
+    if(!isAnimating)  
       isAnimating = true;
+      var new_state:Array<boolean> = $drawerState.map((state, i) => {return i == index ? !state : state})
+      drawerState.update(new_state)
+     
       setTimeout(() => {
         isAnimating = false;
 				setMinHeight()
@@ -43,14 +50,11 @@
 		}
 	}
 
-	function setHtmlContent() {
+	async function setHtmlContent() {
 		is_rendred = false
-		setTimeout(() => {
-			console.log(document.querySelector('#hidden-content')?.firstChild)
-
-			content_list = traverse([], document.querySelector('#hidden-content')) 		
-			is_rendred = true
-		}, 1)
+		await tick();
+    content_list = traverse([], document.querySelector('#hidden-content')) 		
+    is_rendred = true
 	}
 
 	function calculateDepth(element:Element) {
@@ -114,33 +118,43 @@
 
 </script>
 
-<section class="{section_classes} {flex_states[0] ? 'flex-1 bg-slate-900' : 'flex-0 bg-slate-800'}" style="min-height:{min_heights[0]}px">
-  <div class="transition-all p-0 {flex_states[0] ? 'opacity-100 h-full w-full' : 'opacity-0 h-14'}">
-    {#if is_rendred}
-      <HTMLReader dataset={content_list} />
-    {/if}
-  </div>
-  <button class="absolute text-xs top-2 right-6 px-4 py-2 bg-blue-500 text-white rounded-none" on:click="{() => toggleFlex(0)}">
-    HTML
-  </button>
-</section>
 
-<section class="{section_classes} {flex_states[1] ? 'flex-1 bg-slate-900' : 'flex-0 bg-slate-800'}" style="min-height:{min_heights[1]}px">
-  <div class="transition-all p-0 {flex_states[1] ? 'opacity-100 h-auto' : 'opacity-0 h-14'}">
-    {#if is_rendred}
-      <CodeReader />
-    {/if}
-  </div>
-  <button class="absolute text-xs top-2 right-6 px-4 py-2 bg-blue-500 text-white rounded-none" on:click="{() => toggleFlex(1)}">
-    CODE
-  </button>
-</section>
 
-<section class="{section_classes} {flex_states[2] ? 'flex-1 bg-slate-900' : 'flex-0 bg-slate-800'}" style="min-height:{min_heights[2]}px">
-  <div class="transition-all {flex_states[2] ? 'opacity-100 h-auto' : 'opacity-0 h-14 overflow-hidden'}">
-    <div></div>
-  </div>
-  <button class="absolute text-xs top-2 right-6 px-4 py-2 bg-blue-500 text-white rounded-none" on:click="{() => toggleFlex(2)}">
-    STYLE
-  </button>
-</section>
+{#if is_mounted}
+  <section class="{section_classes} {$drawerState[0] ? 'flex-1 bg-slate-900' : 'flex-0 bg-slate-700'}" style="min-height:{min_heights[0]}px">
+    <div class="transition-all p-0 {$drawerState[0] ? 'opacity-100 h-full w-full' : 'opacity-50 h-14'}">
+      {#if is_rendred}
+        <HTMLReader dataset={content_list} />
+      {/if}
+    </div>
+    <a href='#html'>
+      <button class={button_classes} on:click="{() => toggleFlex(0)}">
+        HTML
+      </button>
+    </a>
+  </section>
+
+  <section class="{section_classes} {$drawerState[1] ? 'flex-1 bg-slate-900' : 'flex-0 bg-slate-700'}" style="min-height:{min_heights[1]}px">
+    <div class="transition-all p-0 {$drawerState[1] ? 'opacity-100 h-auto' : 'opacity-0 h-14'}">
+      {#if is_rendred}
+        <CodeReader />
+      {/if}
+    </div>
+    <a href='#code'>
+      <button class={button_classes} on:click="{() => toggleFlex(1)}">
+        JS
+      </button>
+    </a>
+  </section>
+
+  <section class="{section_classes} {$drawerState[2] ? 'flex-1 bg-slate-900' : 'flex-0 bg-slate-700'}" style="min-height:{min_heights[2]}px">
+    <div class="transition-all {$drawerState[2] ? 'opacity-100 h-auto' : 'opacity-0 h-14 overflow-hidden'}">
+      <StyleReader />
+    </div>
+    <a href='#style'>
+      <button class={button_classes} on:click="{() => toggleFlex(2)}">
+        CSS
+      </button>
+    </a>
+  </section>
+{/if}

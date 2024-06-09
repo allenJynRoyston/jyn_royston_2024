@@ -8,7 +8,7 @@
 			links
 				a.is_link(href='/') Home
 				a.is_link(href='/about') About Me
-				a.is_link(href='/styleguide') Styleguide
+				a.is_link(href='/skillset') Skills
 						
 </template>
 

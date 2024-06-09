@@ -4,7 +4,7 @@
 
 <template lang="pug">
 	footer
-		a.is_link(href='/') Made with ❤️ + Svelte/SvelteKit 
+		p 🎇 Site built by Allen "Jyn" Royston 🎇
 		
 </template>
 

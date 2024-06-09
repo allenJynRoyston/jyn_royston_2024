@@ -1,78 +1,84 @@
 <script lang='ts'>
   import { page } from '$app/stores';
 
-  let lines:Array<number> = new Array(100).fill(0)
-  // var dataset_is_updated:boolean = false
-  
-  // function get_dataset_tag(index:number):String {
-  //   return index in dataset ? dataset[index].tagName : ""
-  // }
+  import CodeFormat from '$components/CodeFormat.svelte'
 
-  // function get_dataset_text(index:number):String {
-  //   return index in dataset ? `${dataset[index].stringWithoutTags === null ? "" : dataset[index].stringWithoutTags}` : ""
-  // }
 
-  // function get_dataset_depth(index:number):number {
-  //   return index in dataset ? (dataset[index].depth + 1) * 10 : 5
-  // }
+  var tag:string = `
+    let *is_ready* = !true!
+    let *your_mom_is_ready* = !false!
+  `
 
-  // function is_green(index:number):boolean {
-  //   return index in dataset ? dataset[index].includedClasses.includes("is_green") : false
-  // }  
+  interface CodeDataSet{
+    "text": string,
+    "depth": number
+  }
 
-  // function is_link(index:number):boolean {
-  //   return index in dataset ? dataset[index].includedClasses.includes("is_link") : false
-  // }   
+  function parseStyleText(tag:string):Array<CodeDataSet> {
+    var linesArray:Array<CodeDataSet> = tag.split('\n').map(line => line.trim()).filter(line => line.length > 0).map((text) => {return {text, depth: 0 } } )
+    
+    var on_depth:number = 0
+    linesArray.forEach(object => {
+      object.depth = on_depth
 
-  // function is_text(index:number):boolean {
-  //   return index in dataset ? dataset[index].includedClasses.includes("is_text") : false
-  // }     
-  
-  // function get_link(index:number):String {
-  //   return index in dataset ? dataset[index].linkTo : null
-  // }     
+      if(object.text.includes("{")){
+        on_depth += 1
+      }
 
-  // $: {
-  //   dataset_is_updated = dataset.length > 0
-  // }
+      if(object.text.includes("}")){
+        on_depth -= 1
+        object.depth = on_depth 
+      }      
+
+    })
+
+    return linesArray    
+  }
+
+  function isChangable(str:string):boolean {
+    const regex = /\*([^*]+)\*/;
+    const match = str.match(regex);
+    return match !== null
+  }
+
+  function extractPartialString({text}:CodeDataSet):string {
+    const regex = /\*([^*]+)\*/;
+    const match = text.match(regex);
+
+    const regex2 = /\!([^*]+)\!/;
+    const match2 = text.match(regex2);
+
+    var return_str:string = `<span>${text}`
+
+    // this can not happen, but is placed here to satisfy the null condition
+    if(match === null || match2 == null){
+      return ""
+    }
+
+    return_str = return_str.replaceAll(match[0], `<span class='text-red-500'>${match[1]}</span> </span>`)
+    return_str = return_str.replaceAll(match2[0], `<span class='text-green-500'>${match2[1]}</span> </span>`)
+
+
+    return return_str
+  }
+
 
 </script>
 
-<div id="code-reader" class="absolute h-full w-full overflow-x-hidden overflow-y-auto p-2">
-  <ul class='flex flex-col gap-0'>
-      {#each lines as _item, index}
-        {#if index > 0}
-          <li class="text-zinc-500 text-xs flex">
-            <span class='min-w-10 text-zinc-400 border-zinc-700 border-r'>
-              {index}
-            </span>
-          </li>
+
+<CodeFormat>
+  {#each parseStyleText(tag) as item}
+    <li class="text-neutral-500 text-xs flex ">
+      <span class='w-full' style="padding-left:{(item.depth + 1) * 10}px"  >
+        {#if isChangable(item.text)}
+          <button type='button' on:click={() => {}}>
+            {@html extractPartialString(item)}
+          </button>
+        {:else}
+        <span class='text-inherit'>{item.text}</span>
         {/if}
-      {/each}
-  </ul>      
-</div>
+      </span>
+    </li>
+  {/each}
+</CodeFormat>
 
-
-
-<style lang='postcss'>
-  /* Hide scrollbar */
-  ::-webkit-scrollbar {
-    width: 5px; /* Adjust the width as needed */
-  }
-
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: black; /* Make the scrollbar track transparent */
-  }
-
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: grey; /* Set the color of the inner bit to blue */
-    border-radius: 10px; /* Round the corners of the scrollbar thumb */
-  }
-
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: darkblue; /* Change the color of the inner bit on hover */
-  }
-</style>

@@ -3,12 +3,13 @@
 @tailwind components;
 @tailwind utilities;
 
-html{
+/* html{
   font-family: "Ubuntu Mono", monospace;
   font-weight: 400;
-}
+} */
 
-button{
+/* button{
   font-family: "Roboto", sans-serif;
   font-weight: 400;
-}
+} */
+

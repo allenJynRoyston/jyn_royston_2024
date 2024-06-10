@@ -17,6 +17,7 @@
 	let is_mounted:boolean = false
 	let is_rendred:boolean = true
   let is_animating:boolean = false;
+  let timeoutId;
 
   type ListItem = {
     tagName: string 
@@ -31,13 +32,37 @@
   }
 
 	// get and set min_heights when component is ready
-	onMount(async() => {
+	onMount(() => {    
     is_mounted = true
     setHtmlContent()
-    
-    await tick()
-		setMinHeight()    
+
+    setTimeout(() => {
+		  setMinHeight()    
+    }, 1)
+
+    window.addEventListener('resize', handleResize)
+		return () => {
+			window.removeEventListener('resize', handleResize)
+		}    
 	})
+
+  function handleScroll() {
+    // Clear any existing timeout
+    clearTimeout(timeoutId);
+    // Set a new timeout to handle the resize event after 300ms (adjust as needed)
+    timeoutId = setTimeout(() => {
+			setMinHeight()
+    }, 250); 
+  }	
+
+  function handleResize() {
+    // Clear any existing timeout
+    clearTimeout(timeoutId);
+    // Set a new timeout to handle the resize event after 300ms (adjust as needed)
+    timeoutId = setTimeout(() => {
+			setMinHeight()
+    }, 500); 
+  }
 
 	// toggle function
 	function toggleFlex(index: number) {  

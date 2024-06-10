@@ -29,11 +29,22 @@
 		is_mounted = true
 		renderContentOnCanvas()
 		window.addEventListener('resize', handleResize)
+		window.addEventListener('wheel', handleScroll)
+
 		return () => {
 			window.removeEventListener('resize', handleResize)
+			window.removeEventListener('wheel', handleScroll)
 		}
 	})
 	
+  function handleScroll() {
+    // Clear any existing timeout
+    clearTimeout(timeoutId);
+    // Set a new timeout to handle the resize event after 300ms (adjust as needed)
+    timeoutId = setTimeout(() => {
+			triggerRedraw()
+    }, 250); 
+  }	
 
   function handleResize() {
     // Clear any existing timeout
@@ -49,8 +60,7 @@
     try {
 			if(!is_updating){
 				// Capture the content of the entire document
-				is_updating = true
-				console.log("here")
+				is_updating = true				
 				const canvas =  await html2canvas(document.getElementById('capture-area'))
 				
 				// Get the target canvas element
@@ -60,7 +70,7 @@
 				// Set the dimensions of the target canvas
 				targetCanvas.width = canvas.width;
 				targetCanvas.height = canvas.height;
-				targetContext.drawImage(canvas, 2, -5)
+				targetContext.drawImage(canvas, 3, -4)
 				
 				await tick()
 				is_updating = false
@@ -120,7 +130,7 @@
 <style lang='postcss'>
   @keyframes shake {
     0% { transform: translateX(0); }
-    25% { transform: translateX(1px); }
+    25% { transform: translateX(0px); }
     50% { transform: translateY(0px); }
     75% { transform: translateX(0px); }
     100% { transform: translateX(0); }

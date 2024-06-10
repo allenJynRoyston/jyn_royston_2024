@@ -7,46 +7,57 @@
   import CodeReader from '$components/CodeReader.svelte';
   import StyleReader from '$components/StyleReader.svelte';
 
-	const section_classes:string = "relative p-0 transition-all duration-500 ease"
+	const section_classes:string = "drawer overflow-y-hidden relative min-h-[50px] transition-all duration-500 ease"
   const button_classes:string = "absolute text-xs top-2 right-6 px-4 py-2 w-20 bg-blue-500 hover:bg-blue-700 text-white rounded-none"
 
 	// let flex_states:Array<boolean> = $drawerState;
-	let min_heights:Array<number> = [0, 0, 0]
-	let isAnimating:boolean = false;
+	let section_heights:Array<number> = [0, 0, 0]	
 	let content_list:Array<Object> = []
 	let previous_route:String
 	let is_mounted:boolean = false
 	let is_rendred:boolean = true
+  let is_animating:boolean = false;
+
+  type ListItem = {
+    tagName: string 
+		includedClasses: Array<string>
+		depth: number
+		linkTo: string | null
+		stringWithoutTags: string | null
+    image: {
+      title: string | null
+      src: string | null
+    } | null
+  }
 
 	// get and set min_heights when component is ready
-	onMount(() => {
-		setMinHeight()
-		setHtmlContent()
-		is_mounted = true
+	onMount(async() => {
+    is_mounted = true
+    setHtmlContent()
+    
+    await tick()
+		setMinHeight()    
 	})
-
-
 
 	// toggle function
 	function toggleFlex(index: number) {  
-    if(!isAnimating)  
-      isAnimating = true;
+    if(!is_animating)  
+      is_animating = true;
       var new_state:Array<boolean> = $drawerState.map((state, i) => {return i == index ? !state : state})
       drawerState.update(new_state)
      
       setTimeout(() => {
-        isAnimating = false;
+        is_animating = false;
 				setMinHeight()
       }, 500)
 	}
 
 	// evaluates all the children/sections and gets their current height 
 	// and assigns it to the array.  Keeps the transitions smooth
-	function setMinHeight() {
-		for(let i = 1; i < document.querySelectorAll('#component-container > section').length + 1; i++ ){
-			const nthSection:Element | null = document.querySelector(`section:nth-child(${i})`);
-			const is_expanded:boolean = nthSection?.classList.contains("flex-1") || false
-			min_heights[i - 1] = is_expanded ? 0 : Number(nthSection?.clientHeight || 0)
+	function setMinHeight() {    
+		for(let i = 1; i < document.querySelectorAll('.drawer').length + 1; i++ ){
+		  const nthSection:Element | null = document.querySelector(`section:nth-child(${i})`);
+      section_heights[i - 1] = nthSection?.getBoundingClientRect().height || 0
 		}
 	}
 
@@ -68,18 +79,22 @@
     }
 
     return depth;
-}	
+  }
+  
 
-	function traverse(list:Array<Object>, element:Element | null):Array<Object> {
+	function traverse(list:Array<ListItem>, element:Element | null):Array<ListItem> {
 		if(element){
         // Get the tag name of the element
-        const tagName:String = element.tagName.toLowerCase();
+        const tagName:string = element.tagName.toLowerCase();
 				const innerHTML = element.innerHTML
 				const classList = element.classList
-				const includedClasses:Array<String> = [];
-				const stringWithoutTags = innerHTML.replace(/<[^>]+>.*?<\/[^>]+>/g, '').replace(/<\/[^>]+>/g, '')
-				const linkTo:String | null = element.hasAttribute("href") ? element.getAttribute("href") : null
-				
+				const includedClasses:Array<string> = [];        
+				const stringWithoutTags = innerHTML.replace(/<[^>]+>.*?<\/[^>]+>/g, '').replace(/<\/[^>]+>/g, '').replace(/<.*$/, '').trim()
+				const linkTo:string | null = element.hasAttribute("href") ? element.getAttribute("href") : null
+        const imageSrc:string | null = element.hasAttribute("src") ? element.getAttribute("src") : null
+				const imageTitle:string | null = element.hasAttribute("data-src-title") ? element.getAttribute("data-src-title") : null
+        const hasImage:boolean = imageSrc !== null && imageTitle !== null
+
 				// first, filters out any svelte-specific classes
 				classList.forEach(cn => {
 					// Check if the class contains the partial string
@@ -95,7 +110,11 @@
 					includedClasses, 
 					depth: calculateDepth(element),
 					linkTo,
-					stringWithoutTags: stringWithoutTags === "" ? null : stringWithoutTags
+					stringWithoutTags: stringWithoutTags === "" ? null : stringWithoutTags,
+          image: hasImage ? {
+            title: imageTitle,
+            src: imageSrc,
+          } : null
 				})
 				
         // Recursively traverse the child elements
@@ -109,6 +128,14 @@
 		return []
 	}
 
+  function applyExpandClasses(is_expanded:boolean):string{
+    return is_expanded ? "flex-grow bg-slate-900" : "flex-shrink bg-slate-700"
+  }
+
+  function applyInnerClasses(is_expanded:boolean):string{
+    return is_expanded ? 'opacity-100 h-1' : 'opacity-20 h-14'
+  }
+
 	$:{
 		if(previous_route !== $page.route.id && is_mounted){
 			previous_route = String($page.route.id)
@@ -121,40 +148,38 @@
 
 
 {#if is_mounted}
-  <section class="{section_classes} {$drawerState[0] ? 'flex-1 bg-slate-900' : 'flex-0 bg-slate-700'}" style="min-height:{min_heights[0]}px">
-    <div class="transition-all p-0 {$drawerState[0] ? 'opacity-100 h-full w-full' : 'opacity-50 h-14'}">
-      {#if is_rendred}
-        <HTMLReader dataset={content_list} />
-      {/if}
-    </div>
-    <a href='#html'>
-      <button class={button_classes} on:click="{() => toggleFlex(0)}">
-        HTML
-      </button>
-    </a>
-  </section>
-
-  <section class="{section_classes} {$drawerState[1] ? 'flex-1 bg-slate-900' : 'flex-0 bg-slate-700'}" style="min-height:{min_heights[1]}px">
-    <div class="transition-all p-0 {$drawerState[1] ? 'opacity-100 h-auto' : 'opacity-0 h-14'}">
-      {#if is_rendred}
-        <CodeReader />
-      {/if}
-    </div>
-    <a href='#code'>
-      <button class={button_classes} on:click="{() => toggleFlex(1)}">
-        JS
-      </button>
-    </a>
-  </section>
-
-  <section class="{section_classes} {$drawerState[2] ? 'flex-1 bg-slate-900' : 'flex-0 bg-slate-700'}" style="min-height:{min_heights[2]}px">
-    <div class="transition-all {$drawerState[2] ? 'opacity-100 h-auto' : 'opacity-0 h-14 overflow-hidden'}">
-      <StyleReader />
-    </div>
-    <a href='#style'>
-      <button class={button_classes} on:click="{() => toggleFlex(2)}">
-        CSS
-      </button>
-    </a>
-  </section>
+  <div class='flex flex-col w-full h-full gap-1 bg-slate-800'>
+    <section class='{section_classes} {applyExpandClasses($drawerState[0])}'>
+      <div class="transition-all p-0 {applyInnerClasses($drawerState[0])}">
+        {#if is_rendred}
+          <HTMLReader dataset={content_list} container_height={section_heights[0]} {is_animating} is_active={$drawerState[0]} />
+        {/if}
+      </div>
+      <a href='#code'>
+        <button class={button_classes} on:click="{() => toggleFlex(0)}">
+          HTML
+        </button>
+      </a>    
+    </section>
+    <section class='{section_classes} {applyExpandClasses($drawerState[1])}'>
+      <div class="transition-all p-0 {applyInnerClasses($drawerState[1])}">
+        <StyleReader container_height={section_heights[1]} {is_animating} is_active={$drawerState[1]} />
+      </div>
+      <a href='#code'>
+        <button class={button_classes} on:click="{() => toggleFlex(1)}">
+          CSS
+        </button>
+      </a>    
+    </section>  
+    <section class='{section_classes} {applyExpandClasses($drawerState[2])}'>
+      <div class="transition-all p-0 {applyInnerClasses($drawerState[2])}">
+        <CodeReader container_height={section_heights[2]} {is_animating} is_active={$drawerState[2]} />
+      </div>
+      <a href='#code'>
+        <button class={button_classes} on:click="{() => toggleFlex(2)}">
+          JS
+        </button>
+      </a>      
+    </section> 
+  </div>
 {/if}

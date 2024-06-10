@@ -3,6 +3,11 @@
 
   import CodeFormat from '$components/CodeFormat.svelte'
 
+  export let container_height:number = 0
+  export let is_animating:boolean = false
+  export let is_active:boolean = false
+
+  var sidebar_is_open:boolean = false
 
   var tag:string = `
     let *is_ready* = !true!
@@ -66,19 +71,26 @@
 </script>
 
 
-<CodeFormat>
-  {#each parseStyleText(tag) as item}
-    <li class="text-neutral-500 text-xs flex ">
-      <span class='w-full' style="padding-left:{(item.depth + 1) * 10}px"  >
-        {#if isChangable(item.text)}
-          <button type='button' on:click={() => {}}>
-            {@html extractPartialString(item)}
-          </button>
-        {:else}
-        <span class='text-inherit'>{item.text}</span>
-        {/if}
-      </span>
-    </li>
-  {/each}
+<CodeFormat {sidebar_is_open} {container_height} {is_animating} {is_active}>
+  <!-- CONTENT -->
+  <div slot='content'>  
+    {#each parseStyleText(tag) as item}
+      <li class="text-neutral-500 text-xs flex ">
+        <span class='w-full' style="padding-left:{(item.depth + 1) * 10}px"  >
+          {#if isChangable(item.text)}
+            <button type='button' on:click={() => {}}>
+              {@html extractPartialString(item)}
+            </button>
+          {:else}
+          <span class='text-inherit'>{item.text}</span>
+          {/if}
+        </span>
+      </li>
+    {/each}
+  </div>
+  <!-- SIDEBAR -->
+  <div slot='sidebar'>
+    <p>Sidebar content!</p>
+  </div>  
 </CodeFormat>
 

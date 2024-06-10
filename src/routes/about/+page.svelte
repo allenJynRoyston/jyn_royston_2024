@@ -45,11 +45,20 @@
 
 </script>
 
+<template lang="pug">
+	section
+		h1.is_body Why hello there!
+		hr
+		p.is_body I'm a passionate web developer with a knack for creating dynamic and user-friendly websites with over 10+ years of experience.
+		p.is_body [REDACTED]
+		p.is_highlight (To be exact, it's been {dateRef.years} years, {dateRef.months} months, and {dateRef.days} to this date)!
+		p.is_body With a solid foundation in both front-end and back-end technologies, I specialize in building responsive and engaging web applications.
+		p.is_body My expertise also extends to game development where I enjoy/struggle in crafting immersive and interactive experiences.
+		p.is_body A natural - and perhaps at times, obsessive - puzzle solver with a passion for coding, I thrive on challenges and 
+		p.is_body continually strive for innovation, creativity, and excellence in my work.
+		p.is_body [REDACTED]
+		p.is_highlight Whether it's coding a sleek website or designing a captivating game, I'm dedicated to delivering high-quality solutions that exceed expectations.
+		hr
+		
 
-<section>
-	<h1 class='is_body'>Why hello there!</h1>
-	<p class='is_body'> My name is Jyn, and I'm a developer with over {dateRef.years}+ years of experience!</p>
-	<p class='is_highlight'>(In fact, it's closer to {dateRef.years} years, {dateRef.months} months, and {dateRef.days} days to be exact!)</p>
-	<p class='is_body'> When I'm not doing web stuff, I'm doing game stuff.</p>
-</section>
-
+</template>

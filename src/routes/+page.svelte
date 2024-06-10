@@ -4,15 +4,18 @@
 
 <svelte:head>
 	<title>Blastzone</title>
-	<meta name="description" content="Allen 'Jyn' Royston - Fullstack developer for hire!" />
+	<meta name="description" content="Allen 'Jyn' Royston - Fullstack developer" />
 </svelte:head>
 
 <template lang="pug">
 	section
 		h1.is_highlight Jyn Royston
-		h2.is_body Developer for hire
-		h3.is_body +10 Years of Experience
-		h3.is_body Mystery Solver
+		img(src='https://picsum.photos/200/300' alt="alt tag" data-src-title='(This is me)')
+		h2.is_body Fullstack developer / Indie game developer
+		h3.is_body Years of experience in the Javascript ecosystem
+		h3.is_body Reliable, creative, and team-player
+		hr
+		h4.is_body [REDACTED] 
 </template>
 
 <style lang="postcss">

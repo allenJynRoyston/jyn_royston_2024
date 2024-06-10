@@ -1,8 +1,14 @@
 <script lang='ts'>
   import { page } from '$app/stores';
   import { onMount, tick } from 'svelte'
-  import { linkColor, highlightColor, bodyColor, bodyFont } from '$stores/store'
+  import { linkColor, highlightColor, bodyColor, bodyFont, imgTagColor } from '$stores/store'
   import CodeFormat from '$components/CodeFormat.svelte'
+
+  export let container_height:number = 0
+  export let is_animating:boolean = false
+  export let is_active:boolean = false
+
+  var sidebar_is_open:boolean = false
 
   interface StyleDataSet{
     text: string,
@@ -56,6 +62,11 @@
         *color*: !${$highlightColor.color}!,           ?highlight_color?
         *font-weight*: !${$highlightColor.weight}!;    ?highlight_weight?
       }
+
+      img button{
+        *color*: !${$imgTagColor.color}!,                 ?img_color?
+        *font-weight*: !${$imgTagColor.weight}!;          ?img_color?
+      }      
 
     `    
     linesArray = parseStyleText(tag)
@@ -201,13 +212,21 @@
         colorOptions(linkColor, $linkColor)
         break
       // -----------------
+      case 'img_color':
+        colorOptions(imgTagColor, $imgTagColor)
+        break        
+      // -----------------
       case 'highlight_color':
         colorOptions(highlightColor, $highlightColor)
         break        
       // -----------------
       case 'link_weight':
         weightOptions(linkColor, $linkColor)
-        break       
+        break   
+      // -----------------
+      case 'img_weight':
+        weightOptions(imgTagColor, $imgTagColor)
+        break               
       // -----------------
       case 'highlight_weight':
         weightOptions(highlightColor, $highlightColor)
@@ -234,20 +253,27 @@
 
 </script>
 
-<CodeFormat>
-  {#each linesArray as item}
-    <li class="text-neutral-500 text-xs flex ">
-      <span class='w-full' style="padding-left:{(item.depth + 1) * 10}px"  >
-        {#if isChangable(item.text)}
-          <button type='button' on:click={(event) => changeProperty(event, item)}>
-            {@html extractPartialString(item)}
-          </button>
-        {:else}
-        <span class='text-inherit'>{item.text}</span>
-        {/if}
-      </span>
-    </li>
-  {/each}
+<CodeFormat {sidebar_is_open} {container_height} {is_animating} {is_active}>
+  <!-- CONTENT -->
+  <div slot='content'>
+    {#each linesArray as item}
+      <li class="text-neutral-500 text-xs flex ">
+        <span class='w-full' style="padding-left:{(item.depth + 1) * 10}px"  >
+          {#if isChangable(item.text)}
+            <button type='button' on:click={(event) => changeProperty(event, item)}>
+              {@html extractPartialString(item)}
+            </button>
+          {:else}
+          <span class='text-inherit'>{item.text}</span>
+          {/if}
+        </span>
+      </li>
+    {/each}
+  </div>
+  <!-- SIDEBAR -->
+  <div slot='sidebar'>
+    <p>Sidebar content!</p>
+  </div>  
 </CodeFormat>
 
 {#if showPopup}

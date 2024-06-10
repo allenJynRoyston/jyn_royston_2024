@@ -16,6 +16,7 @@ function createDrawerState(defaultState:Array<boolean> = [true, false, false]) {
 }
 
 export const drawerState = createDrawerState()
+export const drawerSidebarState = writable([false, false, false])
 // --------------------------
 
 
@@ -54,6 +55,7 @@ function createTextColor(defaultState:ColorState) {
 	};
 }
 
+export const imgTagColor = createTextColor({color: "orange", weight: 500});
 export const linkColor = createTextColor({color: "blue", weight: 500});
 export const highlightColor = createTextColor({color: "green", weight: 500})
 export const bodyColor = createTextColor({color: "neutral", weight: 50})

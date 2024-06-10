@@ -3,10 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* html{
-  font-family: "Ubuntu Mono", monospace;
-  font-weight: 400;
-} */
+html{
+  overflow: hidden;
+}
 
 /* button{
   font-family: "Roboto", sans-serif;

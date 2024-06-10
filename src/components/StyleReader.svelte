@@ -53,7 +53,7 @@
         *font-weight*: !${$linkColor.weight}!;          ?link_weight?
       }
 
-      section{
+      body{
         *color*: !${$bodyColor.color}!,                ?body_color?
         *font-weight*: !${$bodyColor.weight}!;         ?body_weight?
       }
@@ -211,6 +211,10 @@
       case 'link_color':
         colorOptions(linkColor, $linkColor)
         break
+      // -----------------
+      case 'body_color':
+        colorOptions(bodyColor, $bodyColor)
+        break        
       // -----------------
       case 'img_color':
         colorOptions(imgTagColor, $imgTagColor)

@@ -22,12 +22,10 @@
   }  
 
   function applyInnerClasses(is_expanded:boolean):string{
-    return is_expanded ? 'opacity-100 w-full p-2' : 'opacity-0 w-0 p-0'
+    return is_expanded ? 'opacity-100 w-full p-2' : 'opacity-50 w-0 p-0'
   }  
 
-  $: if (sidebar_is_open) {
-   console.log(sidebar_is_open) 
-  }
+
 </script>
 
 
@@ -52,19 +50,25 @@
     
 
     <!-- sidebar  -->
-    <div class='{sidebar_is_open ? 'flex-grow' : 'flex-shrink'} transition-all duration-300 ease max-w-[400px] overflow-x-hidden text-neutral-500 text-xs flex bg-gradient-to-r from-slate-900 to-slate-950 {is_active ? 'overflow-y-auto' : 'overflow-y-hidden'}' style='max-height: {is_animating ? '100%' : `${container_height}px`}'>
+    <div class='{sidebar_is_open ? 'flex-grow' : 'flex-shrink'} transition-all duration-500 ease max-w-[400px] overflow-x-hidden text-neutral-500 text-xs flex bg-gradient-to-r from-slate-900 to-slate-950 {is_active ? 'overflow-y-auto' : 'overflow-y-hidden'}' style='max-height: {is_animating ? '100%' : `${container_height}px`}'>
       <div class='mt-[40px] relative w-full flex flex-col gap-2 {applyInnerClasses(sidebar_is_open)}'>
-        <div class='flex justify-between border p-2'>
-          <a href={sidebar_content} target="_blank" class='hover:text-white transition-colors duration-300'>{sidebar_content}</a>
-          <div class='flex gap-2'>
-            <a href={sidebar_content} target="_blank"> 💾 </a>
-            <button on:click={onSidebarClose}> ❌ </button>
+        {#if sidebar_is_open}
+          <div class='flex justify-between border p-2'>
+            <a href={sidebar_content} target="_blank" class='hover:text-white transition-colors duration-300'>{sidebar_content}</a>
+            <div class='flex gap-2'>
+              <a href={sidebar_content} target="_blank"> 💾 </a>
+              <button on:click={onSidebarClose}> ❌ </button>
+            </div>
           </div>
-        </div>
-        <div class='flex-grow'>
-          <slot name='sidebar' />
-        </div>
-        <button class='border p-2 hover:text-white transition-colors duration-300' on:click={onSidebarClose}>Close</button>
+
+
+          <div class='flex-grow'>
+            <slot name='sidebar' />
+          </div>
+
+
+          <button class='border p-2 hover:text-white transition-colors duration-300' on:click={onSidebarClose}>Close</button>
+        {/if}
       </div>         
     </div>    
   </div>

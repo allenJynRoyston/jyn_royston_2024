@@ -1,7 +1,7 @@
 <script lang='ts'>
   import { tick } from 'svelte'
   import { page } from '$app/stores';
-  import { linkColor, highlightColor, imgTagColor, bodyColor } from '$stores/store'
+  import { linkColor, highlightColor, imgTagColor, bodyColor, drawerSidebarState } from '$stores/store'
 
   import CodeFormat from '$components/CodeFormat.svelte'
 
@@ -73,11 +73,15 @@
     }
     sidebar_is_open = true
     sidebar_content = src
+    $drawerSidebarState = true
   }
 
   function onSidebarClose(){
     sidebar_is_open = false
-    sidebar_content = null
+    setTimeout(() => {
+      sidebar_content = null
+      $drawerSidebarState = false
+    }, 1000)
   }
 
   $: {

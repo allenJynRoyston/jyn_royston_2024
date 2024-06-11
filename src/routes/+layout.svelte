@@ -14,7 +14,7 @@
  
 	let previous_route:String
 	let previous_drawer_state:Array<boolean> = []
-	let previous_drawer_sidebar_state:boolean = false
+	let show_secret:boolean = false
 	let is_mounted:boolean = false
 	let is_animating:boolean = false
 	let is_updating:boolean = false
@@ -92,6 +92,11 @@
 		}
 	}
 
+	function isHiddenVisible(){		
+		show_secret = $drawerState.every(item => item === false)
+		console.log("show_secret: ", show_secret)
+	}
+
 	$:{		
 		if($shouldRedraw){
 			$shouldRedraw = false
@@ -106,6 +111,7 @@
 
 		if(JSON.stringify(previous_drawer_state) !== JSON.stringify($drawerState)){
 			previous_drawer_state = $drawerState
+			isHiddenVisible()
 			triggerRedraw(500)
 		}
 
@@ -117,6 +123,10 @@
 <div id="capture-area" class="flex flex-col h-screen w-screen bg-slate-800 overflow-hidden gap-1 min-w-[900px]">
 	<TrueHeader />
 	<Prompt />
+
+	<div class='absolute bottom-20 p-2 w-full flex justify-center {show_secret ? '' : 'hidden'}' >
+			<button class='bg-red-600 text-white px-5 py-1 opacity-30 hover:opacity-50 animate-opacity easea duration-300'>???</button>
+	</div>
 
 	<div class="h-screen w-screen min-w-[900px]">
 		<Drawers />

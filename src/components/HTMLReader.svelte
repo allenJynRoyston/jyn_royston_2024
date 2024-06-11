@@ -1,7 +1,7 @@
 <script lang='ts'>
   import { tick } from 'svelte'
   import { page } from '$app/stores';
-  import { linkColor, highlightColor, imgTagColor, bodyColor, drawerSidebarState } from '$stores/store'
+  import { linkColor, highlightColor, imgTagColor, bodyColor, drawerSidebarState, shouldRedraw } from '$stores/store'
 
   import CodeFormat from '$components/CodeFormat.svelte'
 
@@ -74,6 +74,7 @@
     sidebar_is_open = true
     sidebar_content = src
     $drawerSidebarState = true
+    $shouldRedraw = true
   }
 
   function onSidebarClose(){
@@ -81,7 +82,8 @@
     setTimeout(() => {
       sidebar_content = null
       $drawerSidebarState = false
-    }, 1000)
+      $shouldRedraw = true
+    }, 50)
   }
 
   $: {
@@ -98,8 +100,8 @@
       {#each dataset as data, index}
         {#if index > 0}
           <li class="text-neutral-500 text-xs flex ">
-            <span class='w-full' style="padding-left:{data.depth * 10}px"  >         
-              {data.tagName}   
+            <span class='w-full' style="padding-left:{(data.depth - 4) * 10}px"  >         
+              {data.tagName}
 
               {#if is_img(data)}
                 <button class='{get_image_color()} hover:text-blue-300 transition-colors duration-300' on:click={() => viewImage(data.image.src)}>

@@ -1,10 +1,11 @@
 import { writable } from 'svelte/store';
 
 // --------------------------
-interface HTMLFontState {
-	font: string
-}
+export const shouldRedraw = writable(false)
+// --------------------------
 
+
+// --------------------------
 function createDrawerState(defaultState:Array<boolean> = [true, false, false]) {
 	const { subscribe, set, update } = writable(defaultState);
 
@@ -16,12 +17,12 @@ function createDrawerState(defaultState:Array<boolean> = [true, false, false]) {
 }
 
 export const drawerState = createDrawerState()
-export const drawerSidebarState = writable([false, false, false])
+export const drawerSidebarState = writable(false)
 // --------------------------
 
 
 // --------------------------
-interface HTMLFontState {
+type HTMLFontState = {
 	font: string
 }
 
@@ -40,7 +41,7 @@ export const bodyFont = createBodyFont({"font": '"Ubuntu Mono", monospace'})
 
 
 // --------------------------
-interface ColorState {
+type ColorState = {
   color: string;
   weight: number;
 }
@@ -55,8 +56,8 @@ function createTextColor(defaultState:ColorState) {
 	};
 }
 
-export const imgTagColor = createTextColor({color: "orange", weight: 500});
-export const linkColor = createTextColor({color: "blue", weight: 500});
+export const bodyColor = createTextColor({color: "neutral", weight: 200})
+export const linkColor = createTextColor({color: "orange", weight: 500});
+export const imgTagColor = createTextColor({color: "blue", weight: 500});
 export const highlightColor = createTextColor({color: "green", weight: 500})
-export const bodyColor = createTextColor({color: "neutral", weight: 50})
 // --------------------------

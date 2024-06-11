@@ -155,8 +155,13 @@
       showPopup = false
     }   
 
+    // blue|green|red|purple|neutral|slate|orange
+
     function colorOptions(prop:any, propvar:any){
       let dropdownlist:Array<DialogList> = [
+          {
+            label: "neutral",
+          },            
           {
             label: "slate",
           },            
@@ -168,7 +173,13 @@
           },
           {
             label: "purple",
-          },          
+          },      
+          {
+            label: "orange",
+          },
+          {
+            label: "blue",
+          },                                       
       ].map(item => ({
         ...item,
         val: item.label,

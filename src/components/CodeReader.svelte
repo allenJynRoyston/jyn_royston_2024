@@ -1,6 +1,4 @@
 <script lang='ts'>
-  import { page } from '$app/stores';
-
   import CodeFormat from '$components/CodeFormat.svelte'
 
   export let container_height:number = 0

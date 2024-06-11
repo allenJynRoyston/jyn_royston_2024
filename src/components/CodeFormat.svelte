@@ -1,6 +1,7 @@
 <script lang='ts'>
   import {tick} from 'svelte'
-  import { bodyFont } from '$stores/store'  
+  import { bodyFont } from '$stores/store'
+  import Sidebar from '$components/Sidebar.svelte';
 
   export let sidebar_is_open:boolean = false
   export let container_height:number = 0
@@ -20,11 +21,6 @@
     await tick()
     render = true
   }  
-
-  function applyInnerClasses(is_expanded:boolean):string{
-    return is_expanded ? 'opacity-100 w-full p-2' : 'opacity-50 w-0 p-0'
-  }  
-
 
 </script>
 
@@ -50,27 +46,9 @@
     
 
     <!-- sidebar  -->
-    <div class='{sidebar_is_open ? 'flex-grow' : 'flex-shrink'} transition-all duration-500 ease max-w-[400px] overflow-x-hidden text-neutral-500 text-xs flex bg-gradient-to-r from-slate-900 to-slate-950 {is_active ? 'overflow-y-auto' : 'overflow-y-hidden'}' style='max-height: {is_animating ? '100%' : `${container_height}px`}'>
-      <div class='mt-[40px] relative w-full flex flex-col gap-2 {applyInnerClasses(sidebar_is_open)}'>
-        {#if sidebar_is_open}
-          <div class='flex justify-between border p-2'>
-            <a href={sidebar_content} target="_blank" class='hover:text-white transition-colors duration-300'>{sidebar_content}</a>
-            <div class='flex gap-2'>
-              <a href={sidebar_content} target="_blank"> 💾 </a>
-              <button on:click={onSidebarClose}> ❌ </button>
-            </div>
-          </div>
-
-
-          <div class='flex-grow'>
-            <slot name='sidebar' />
-          </div>
-
-
-          <button class='border p-2 hover:text-white transition-colors duration-300' on:click={onSidebarClose}>Close</button>
-        {/if}
-      </div>         
-    </div>    
+    <Sidebar {container_height} {sidebar_is_open} {is_animating} {is_active} {sidebar_content} {onSidebarClose} >
+      <slot name='sidebar' />
+    </Sidebar>
   </div>
 {/if}
 

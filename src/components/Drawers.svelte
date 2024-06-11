@@ -17,7 +17,7 @@
 	let is_mounted:boolean = false
 	let is_rendred:boolean = true
   let is_animating:boolean = false;
-  let timeoutId;
+  let timeoutId:any;
 
   type ListItem = {
     tagName: string 
@@ -46,19 +46,8 @@
 		}    
 	})
 
-  function handleScroll() {
-    // Clear any existing timeout
-    clearTimeout(timeoutId);
-    // Set a new timeout to handle the resize event after 300ms (adjust as needed)
-    timeoutId = setTimeout(() => {
-			setMinHeight()
-    }, 250); 
-  }	
-
   function handleResize() {
-    // Clear any existing timeout
     clearTimeout(timeoutId);
-    // Set a new timeout to handle the resize event after 300ms (adjust as needed)
     timeoutId = setTimeout(() => {
 			setMinHeight()
     }, 500); 

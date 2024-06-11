@@ -8,6 +8,9 @@ export default {
   ],  
   theme: {
     extend: {
+      colors:{
+        'soundcloud': '#f5f5f5',
+      },      
       transitionProperty: {
         'flex': 'flex',
         'opacity': 'opacity',

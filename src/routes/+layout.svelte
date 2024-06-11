@@ -124,7 +124,7 @@
 	<TrueHeader />
 	<Prompt />
 
-	<div class='absolute bottom-20 p-2 w-full flex justify-center {show_secret ? '' : 'hidden'}' >
+	<div class='absolute bottom-40 p-2 w-full flex justify-center {show_secret ? '' : 'hidden'}' >
 			<button class='bg-red-600 text-white px-5 py-1 opacity-30 hover:opacity-50 animate-opacity easea duration-300'>???</button>
 	</div>
 

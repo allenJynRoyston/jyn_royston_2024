@@ -1,15 +1,17 @@
 <script lang='ts'>
 	import './styles.css';
-	import {onMount, onDestroy, tick} from 'svelte'
+	import {onMount, tick} from 'svelte'
 	import html2canvas from 'html2canvas';
-	import { drawerState, drawerSidebarState, linkColor, highlightColor, bodyColor, imgTagColor, bodyFont  } from '$stores/store'
+	import { drawerState, linkColor, highlightColor, bodyColor, imgTagColor, bodyFont, shouldRedraw  } from '$stores/store'
 	import { page } from '$app/stores';
 
+	import TrueHeader from '$components/TrueHeader.svelte'
 	import Drawers from '$components/Drawers.svelte'
-	import Header from '$components/Header.svelte';	
-	import Footer from '$components/Footer.svelte';	
-  import { fade } from 'svelte/transition';
-
+	import Header from '$components/Header.svelte'	
+	import Footer from '$components/Footer.svelte'	
+	import Prompt from '$components/Prompt.svelte'
+	import MusicPlayer from '$components/MusicPlayer.svelte';
+ 
 	let previous_route:String
 	let previous_drawer_state:Array<boolean> = []
 	let previous_drawer_sidebar_state:boolean = false
@@ -17,7 +19,7 @@
 	let is_animating:boolean = false
 	let is_updating:boolean = false
 	let fade_duration:number = 300
-  let timeoutId;
+  let timeoutId:any
 
 	bodyFont.subscribe(_val => {triggerRedraw()})
   linkColor.subscribe(_val => {triggerRedraw()})
@@ -27,7 +29,7 @@
 
 	onMount(() => {
 		is_mounted = true
-		renderContentOnCanvas()
+		
 		window.addEventListener('resize', handleResize)
 		window.addEventListener('wheel', handleScroll)
 
@@ -37,7 +39,7 @@
 		}
 	})
 	
-  function handleScroll() {
+  function redraw(duration:number = 250) {
     // Clear any existing timeout
     clearTimeout(timeoutId);
     // Set a new timeout to handle the resize event after 300ms (adjust as needed)
@@ -46,13 +48,12 @@
     }, 250); 
   }	
 
+  function handleScroll() {
+    redraw()
+  }	
+
   function handleResize() {
-    // Clear any existing timeout
-    clearTimeout(timeoutId);
-    // Set a new timeout to handle the resize event after 300ms (adjust as needed)
-    timeoutId = setTimeout(() => {
-			triggerRedraw()
-    }, 500); 
+    redraw(500)
   }
 
 
@@ -91,7 +92,13 @@
 		}
 	}
 
-	$:{
+	$:{		
+		if($shouldRedraw){
+			$shouldRedraw = false
+			redraw()
+		}
+		
+
 		if(previous_route !== $page.route.id && is_mounted){
 			previous_route = String($page.route.id)
 			triggerRedraw()
@@ -102,17 +109,16 @@
 			triggerRedraw(500)
 		}
 
-		if(previous_drawer_sidebar_state !== $drawerSidebarState){
-			previous_drawer_sidebar_state = $drawerSidebarState			
-			triggerRedraw(500)
-		}		
 	}	
 
 </script>
 
 
-<div class="flex flex-col h-screen w-screen bg-slate-800 overflow-hidden gap-1">
-	<div id="capture-area" class="h-screen w-screen">
+<div id="capture-area" class="flex flex-col h-screen w-screen bg-slate-800 overflow-hidden gap-1 min-w-[900px]">
+	<TrueHeader />
+	<Prompt />
+
+	<div class="h-screen w-screen min-w-[900px]">
 		<Drawers />
 	</div>
 
@@ -121,22 +127,25 @@
 		<slot></slot>
 		<Footer />
 	</div>
+
+	<MusicPlayer />
+
 </div>
 
 
-<canvas id="target-canvas" class='animate-shake absolute w-full h-full top-0 left-0 z-10 pointer-events-none transition-opacity ease-in-out {is_animating ? 'opacity-20' : is_updating ? 'opacity-0' : 'opacity-30'}' willReadFrequently={true} style="transition-duration: {fade_duration}ms" />
+<canvas id="target-canvas" class='animate-shake absolute w-full h-full top-0 left-0 z-10 pointer-events-none transition-opacity ease {is_animating ? 'opacity-20' : is_updating ? 'opacity-0' : 'opacity-20'}' willReadFrequently style="transition-duration: {fade_duration}ms" />
 
 
 <style lang='postcss'>
   @keyframes shake {
     0% { transform: translateX(0); }
     25% { transform: translateX(0px); }
-    50% { transform: translateY(0px); }
+    50% { transform: translateY(-1px); }
     75% { transform: translateX(0px); }
     100% { transform: translateX(0); }
   }
 
   .animate-shake {
-    animation: shake 0.1s ease infinite;
+    animation: shake 100ms ease-in-out infinite;
   }
 </style>

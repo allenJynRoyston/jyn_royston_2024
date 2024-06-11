@@ -7,13 +7,17 @@
 	section
 		h1.is_body Skills
 		div /* -------------------------- */
-			h2.is_body Frontend
+			h2.is_body Languages
 			hr
 			p.is_highlight 😄 Javascript 
+			p.is_highlight 😄 GDScript/Godot 
+			p.is_highlight 😐 Python 
+		div /* -------------------------- */
+			h2.is_body Frontend
+			hr
 			p.is_highlight 😄 Svelte 
 			p.is_highlight 😄 React 
 			p.is_highlight 😄 Vue 
-			p.is_highlight 😔 Angular
 		div /* -------------------------- */
 			h2.is_body Design
 			hr
@@ -29,17 +33,16 @@
 		div /* -------------------------- */
 			h2.is_body Other Technologies
 			hr
-			p.is_highlight 😐 Python 
-			p.is_highlight 😄 Godot (Game Engine)		
 			p.is_highlight 😄 GIT
 			p.is_highlight 😐 Docker
-			p.is_highlight 🤓 Rust
+			p.is_highlight 😐 [REDACTED]
+			p.is_highlight 😐 [REDACTED]
 		div /* -------------------------- */
-			h2.is_body Hard to quanitfy skills
+			h2.is_body Personal
 			hr
-			p.is_highlight 😄 Creative! 
-			p.is_highlight 😄 Fun at raves! 
-			p.is_highlight 😄 Calm and easy going!
-			p.is_highlight 😄 Works hard!
+			p.is_highlight 😄 Creative!
+			p.is_highlight 😄 [REDACTED]
+			p.is_highlight 😄 [REDACTED]
+			p.is_highlight 😄 [REDACTED]
 		div /* -------------------------- */
 </template>

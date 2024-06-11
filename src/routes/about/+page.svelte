@@ -47,7 +47,7 @@
 
 <template lang="pug">
 	section
-		h1.is_body Why hello there!
+		img(src='https://media.tenor.com/thlpKlB8HVQAAAAi/obi-wan-transparent.gif' alt="alt tag" data-src-title='Why hello there!')
 		hr
 		p.is_body I'm a passionate web developer with a knack for creating dynamic and user-friendly websites with over 10+ years of experience.
 		p.is_body [REDACTED]

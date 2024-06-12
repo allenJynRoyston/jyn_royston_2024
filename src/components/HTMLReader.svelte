@@ -14,6 +14,7 @@
   var render:boolean = true
   var sidebar_is_open:boolean = false
   var sidebar_content:string | null = null
+  var sidebar_is_busy:boolean = false
 
 
   linkColor.subscribe(_val => {updateRender()})
@@ -48,6 +49,11 @@
   function is_img(data:any):boolean {    
     return data.image !== null
   }     
+
+  function has_target_tag(data:any):string {
+    return data.target || ""
+    
+  }   
   
   // ------
   function get_highlight_color(str:string = 'text'):string {
@@ -67,14 +73,20 @@
   }    
 
   function viewImage(src:string){
-    if(sidebar_is_open && src === sidebar_content){
-      onSidebarClose()
-      return
+    if(!sidebar_is_busy){
+      sidebar_is_busy = true
+      setTimeout(() => {
+        sidebar_is_busy = false
+      }, 300)
+      if(sidebar_is_open && src === sidebar_content){
+        onSidebarClose()
+        return
+      }
+      sidebar_is_open = true
+      sidebar_content = src
+      $drawerSidebarState = true
+      $shouldRedraw = true
     }
-    sidebar_is_open = true
-    sidebar_content = src
-    $drawerSidebarState = true
-    $shouldRedraw = true
   }
 
   function onSidebarClose(){
@@ -110,7 +122,7 @@
               {/if}
 
               {#if is_link(data)}
-                <a aria-current="{$page.url.pathname === '/' ? 'page' : undefined}" href="{data.linkTo}" class="{get_link_color()} underline hover:text-white transition-colors duration-300 {is_highlight(data) ? get_highlight_color() : ""}">{get_dataset_text(data)}</a>
+                <a aria-current="{$page.url.pathname === '/' ? 'page' : undefined}" href="{data.linkTo}" target={has_target_tag(data)} class="{get_link_color()} underline hover:text-white transition-colors duration-300 {is_highlight(data) ? get_highlight_color() : ""}">{get_dataset_text(data)}</a>
               {:else}
                 <span class="{is_highlight(data) ? get_highlight_color() : ""} {is_body(data) ? get_body_color() : ""}">{get_dataset_text(data)}</span>
               {/if}

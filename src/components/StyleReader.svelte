@@ -125,8 +125,8 @@
     }
 
     // wrap replacable string partials with a span with preavailable tailwind classes
-    return_str = return_str.replaceAll(match[0], `<span class='text-slate-300'>${match[1]}</span></span>`)
-    return_str = return_str.replaceAll(match2[0], `<span class='text-slate-100'>${match2[1]}</span></span>`)
+    return_str = return_str.replaceAll(match[0], `<span class='text-blue-200'>${match[1]}</span></span>`)
+    return_str = return_str.replaceAll(match2[0], `<span class='text-white'>${match2[1]}</span></span>`)
     return_str = return_str.replaceAll(match3[0], ``)
 
     return return_str
@@ -134,6 +134,7 @@
 
 
   async function changeProperty(event:Event, {trigger, line}:StyleDataSet){
+    const target:EventTarget = event.target as EventTarget
     let dropdownlist:Array<DialogList> = []
     showPopup = true  
 
@@ -186,7 +187,7 @@
         onClick: (val:any) => { update_color(val, prop, propvar) }
       }))
       
-      setupDialogBox(event.target, line, dropdownlist)    
+      setupDialogBox(target, line, dropdownlist)    
     }    
 
 
@@ -196,7 +197,7 @@
         val: item,
         onClick: (val:any) => { update_weight(val, prop, propvar) }
       }))
-      setupDialogBox(event.target, line, dropdownlist)    
+      setupDialogBox(target, line, dropdownlist)    
     }        
 
     switch (trigger) {
@@ -216,7 +217,7 @@
           onClick: (val:any) => { update_bodyfont(val) }
         }))     
 
-        setupDialogBox(event.target, line, dropdownlist)
+        setupDialogBox(target, line, dropdownlist)
         break
       // -----------------
       case 'link_color':
@@ -255,12 +256,12 @@
   }
 
 
-
-  function setupDialogBox(target:EventTarget|null, line:number, _popupItems:Array<DialogList>){
+  function setupDialogBox(target:EventTarget, line:number, _popupItems:Array<DialogList>){
       const element = target as HTMLElement
+      const parentElement = element.parentNode as HTMLElement;
       const rect = element.getBoundingClientRect()
       absolutePosition = { 
-        top: line * target.parentNode.getBoundingClientRect().height - 20,
+        top: line * parentElement.getBoundingClientRect().height,
         left: rect.left 
       }
       popupItems = _popupItems

@@ -11,15 +11,19 @@
 	import Footer from '$components/Footer.svelte'	
 	import Prompt from '$components/Prompt.svelte'
 	import MusicPlayer from '$components/MusicPlayer.svelte';
- 
+
+
 	let previous_route:String
 	let previous_drawer_state:Array<boolean> = []
 	let show_secret:boolean = false
 	let is_mounted:boolean = false
-	let is_animating:boolean = false
-	let is_updating:boolean = false
-	let fade_duration:number = 300
-  let timeoutId:any
+	
+
+	let debounceTimeout: number | null = null
+	let innerDebounceTimeout:number | null = null
+	
+	let previous_buffered_image:string|null = null
+	let buffered_image:string|null = null
 
 	bodyFont.subscribe(_val => {triggerRedraw()})
   linkColor.subscribe(_val => {triggerRedraw()})
@@ -39,68 +43,82 @@
 		}
 	})
 	
-  function redraw(duration:number = 250) {
-    // Clear any existing timeout
-    clearTimeout(timeoutId);
-    // Set a new timeout to handle the resize event after 300ms (adjust as needed)
-    timeoutId = setTimeout(() => {
-			triggerRedraw()
-    }, 250); 
-  }	
 
   function handleScroll() {
-    redraw()
+    triggerRedraw(500)
   }	
 
   function handleResize() {
-    redraw(500)
+    triggerRedraw(500)
   }
 
+	function takeScreenshot():Promise<string> {
+    return new Promise(async (resolve) => {			
+			const html2canvasOptions = {
+					imageTimeout: 0,
+					scale: 0.5, // Lower the scale to reduce resolution and improve speed
+					logging: false, // Disable logging for performance
+					allowTaint: true, // Allow tainted canvases (use with caution)
+					useCORS: true // Enable CORS to handle images from different origins (if needed)
+			};
+			const results = await html2canvas(document.getElementById('capture-area') as HTMLCanvasElement, html2canvasOptions);
+			// Get the target canvas element
+			const targetCanvas = document.getElementById('target-canvas') as HTMLCanvasElement;
+			const targetContext = targetCanvas.getContext('2d') as CanvasRenderingContext2D;
 
-  async function renderContentOnCanvas() {
-    try {
-			if(!is_updating){
-				// Capture the content of the entire document
-				is_updating = true				
-				const canvas =  await html2canvas(document.getElementById('capture-area'))
-				
-				// Get the target canvas element
-				const targetCanvas = document.getElementById('target-canvas');
-				const targetContext = targetCanvas.getContext('2d');
+			// Set the dimensions of the target canvas
+			targetCanvas.width = results.width;
+			targetCanvas.height = results.height;
+			targetContext.drawImage(results, 0, 0);
+					
+			targetCanvas.toBlob((blob: Blob | null) => {
+				if(blob){
+					const reader = new FileReader()
+					reader.onload = function(event:ProgressEvent<FileReader>) {
+						if (event.target && event.target.result) {
+							resolve( event.target.result as string )
+						}
+					};
+					reader.readAsDataURL(blob);						
+				}
+			},'image/png')			
+    });
+	}
 
-				// Set the dimensions of the target canvas
-				targetCanvas.width = canvas.width;
-				targetCanvas.height = canvas.height;
-				targetContext.drawImage(canvas, 3, -4)
-				
-				await tick()
-				is_updating = false
-			}
 
-    } catch (error) {
-      console.error('Error rendering content on canvas:', error);
-    }
-  }
+	async function triggerRedraw(delay: number = 1) {
+		if (typeof window !== 'undefined') {
+				if (debounceTimeout !== null) {
+					clearTimeout(debounceTimeout);
+				}
+				debounceTimeout = setTimeout(async () => {
+						if (buffered_image !== null) {
+								previous_buffered_image = buffered_image;
+								if (innerDebounceTimeout !== null) {
+										clearTimeout(innerDebounceTimeout);
+								}
 
-	function triggerRedraw(duration:number = fade_duration){
-		if(!is_animating){
-			is_animating = true
-			setTimeout(() => {
-				is_animating = false
-				renderContentOnCanvas()
-			}, duration)		
+								innerDebounceTimeout = setTimeout(() => {
+										previous_buffered_image = null;
+								}, 700);
+						}
+						
+						buffered_image = null;
+						// then replace it with new screen shot
+						let imgdata = await takeScreenshot();
+						buffered_image = imgdata;
+				}, delay);
 		}
 	}
 
 	function isHiddenVisible(){		
 		show_secret = $drawerState.every(item => item === false)
-		console.log("show_secret: ", show_secret)
 	}
 
 	$:{		
-		if($shouldRedraw){
+		if($shouldRedraw && is_mounted){
 			$shouldRedraw = false
-			redraw()
+			triggerRedraw()
 		}
 		
 
@@ -123,9 +141,10 @@
 <div id="capture-area" class="flex flex-col h-screen w-screen bg-slate-800 overflow-hidden gap-1 min-w-[900px]">
 	<TrueHeader />
 	<Prompt />
-
+	<MusicPlayer />
+	
 	<div class='absolute bottom-40 p-2 w-full flex justify-center {show_secret ? '' : 'hidden'}' >
-			<button class='bg-red-600 text-white px-5 py-1 opacity-30 hover:opacity-50 animate-opacity easea duration-300'>???</button>
+			<button class='bg-red-600 text-white px-5 py-1 opacity-30 hover:opacity-50 animate-opacity ease duration-300'>???</button>
 	</div>
 
 	<div class="h-screen w-screen min-w-[900px]">
@@ -138,19 +157,55 @@
 		<Footer />
 	</div>
 
-	<MusicPlayer />
 
 </div>
 
 
-<canvas id="target-canvas" class='animate-shake absolute w-full h-full top-0 left-0 z-10 pointer-events-none transition-opacity ease {is_animating ? 'opacity-20' : is_updating ? 'opacity-0' : 'opacity-20'}' willReadFrequently style="transition-duration: {fade_duration}ms" />
 
+
+<canvas id="target-canvas" class='absolute w-full h-full top-0 left-0 z-10 pointer-events-none hidden'  />
+{#if previous_buffered_image !== null}
+	<img class='absolute w-full h-full top-0 left-0 pointer-events-none animate-fade-out z-20' src={previous_buffered_image} alt="alt tag" style="transform: translate(-3px, -5px); opacity: 0">
+{/if}
+{#if buffered_image !== null}
+	<img class='absolute w-full h-full top-0 left-0 pointer-events-none z-20 fade-in' alt='test' src={buffered_image} style="transform: translate(-3px, -5px)"/>
+{/if}
 
 <style lang='postcss'>
+	@keyframes fade-out {
+		0% {
+			opacity: 0.2
+		}
+		100% {
+			opacity: 0;
+		}
+	}
+
+	.animate-fade-out {
+		animation: fade-out 700ms ease-in-out;
+	}
+
+
+	@keyframes fade-in {
+		0% {
+			opacity: 0;
+		}
+		100% {
+			opacity: 0.3;
+		}
+	}
+
+
+	.fade-in {
+		animation: fade-in 700ms ease;
+		opacity: 0.3;
+	}
+
+
   @keyframes shake {
     0% { transform: translateX(0); }
     25% { transform: translateX(0px); }
-    50% { transform: translateY(-1px); }
+    50% { transform: translateY(0px); }
     75% { transform: translateX(0px); }
     100% { transform: translateX(0); }
   }

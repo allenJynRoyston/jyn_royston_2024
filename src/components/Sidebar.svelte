@@ -15,7 +15,7 @@
 
 </script>
 
-<div class='{sidebar_is_open ? 'flex-grow' : 'flex-shrink'} max-w-[400px] overflow-x-hidden text-neutral-500 text-xs flex bg-gradient-to-r from-slate-900 to-slate-950 {is_active ? 'overflow-y-auto' : 'overflow-y-hidden'}' style='max-height: {is_animating ? '100%' : `${container_height}px`}'>
+<div class='{sidebar_is_open ? 'flex-grow' : 'flex-shrink'} max-w-[400px] overflow-x-hidden text-neutral-500 text-xs flex bg-gradient-to-tl from-slate-800 to-blue-950 {is_active ? 'overflow-y-auto' : 'overflow-y-hidden'}' style='max-height: {is_animating ? '100%' : `${container_height}px`}'>
   <div class='mt-[40px] relative w-full flex flex-col gap-2 {applyInnerClasses(sidebar_is_open)}'>
     {#if sidebar_is_open}
       <div class='flex justify-between border p-2'>

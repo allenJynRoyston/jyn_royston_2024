@@ -26,6 +26,7 @@
 		return str.replace('/', '')
 	}
 
+
 	
 </script>
 

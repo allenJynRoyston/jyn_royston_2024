@@ -27,11 +27,22 @@
     }
   }
 
+  // Function to debounce the shouldRedraw state update
+  function debounce(fn: Function, delay: number) {
+    let timer: number;
+    return function () {
+      clearTimeout(timer);
+      timer = setTimeout(fn, delay);
+    };
+  }
+
   $: {
-    if(is_visible || !is_visible){
-      $shouldRedraw = true      
+    if (is_visible || !is_visible) {
+      debounce(() => {
+        $shouldRedraw = true;
+      }, 300)();
     }
-  }  
+  }
 </script>
 
 <div class='w-full text-xs  text-green-500 bg-neutral-900 transition-all duration-300 ease {is_visible ? 'opacity-100 h-auto px-2 py-5' : 'opacity-0 h-[0px] p-0'}' >

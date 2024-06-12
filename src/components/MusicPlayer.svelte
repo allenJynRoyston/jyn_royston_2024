@@ -48,26 +48,28 @@
   })
 
   function setupSC(){
-    // Get a reference to the SoundCloud iframe
-    const soundcloudIframe = document.getElementById('soundcloud-iframe');
+    if(is_visible){
+      // Get a reference to the SoundCloud iframe
+      const soundcloudIframe = document.getElementById('soundcloud-iframe');
 
-    // Initialize the SoundCloud Player SDK
-    const player = SC.Widget(soundcloudIframe);
-    // Add event listeners to listen for player events
-    player.bind(SC.Widget.Events.PLAY, function() {
-      is_playing = true
-    });
-
-    player.bind(SC.Widget.Events.PAUSE, function() {
-      is_playing = false
-    });
-
-    player.bind(SC.Widget.Events.READY, function() {
-      player.getCurrentSound(function(_currentTrack:SoundCloudTrack) {
-        currentTrack = _currentTrack
-        player.play();
+      // Initialize the SoundCloud Player SDK
+      const player = SC.Widget(soundcloudIframe);
+      // Add event listeners to listen for player events
+      player.bind(SC.Widget.Events.PLAY, function() {
+        is_playing = true
       });
-    });      
+
+      player.bind(SC.Widget.Events.PAUSE, function() {
+        is_playing = false
+      });
+
+      player.bind(SC.Widget.Events.READY, function() {
+        player.getCurrentSound(function(_currentTrack:SoundCloudTrack) {
+          currentTrack = _currentTrack
+          $shouldRedraw = true  
+        });
+      });      
+    }
   }
 
   function handleKeydown(event:KeyboardEvent) {
@@ -103,15 +105,31 @@
     setupSC()    
   }
 
+  // Function to debounce the shouldRedraw state update
+  function debounce(fn: Function, delay: number) {
+    let timer: number;
+    return function () {
+      clearTimeout(timer);
+      timer = setTimeout(fn, delay);
+    };
+  }
+
   $: {
-    if(is_visible || !is_visible){
-      $shouldRedraw = true      
+    if (is_visible || !is_visible) {
+      if(is_visible){
+        rerenderSC()
+      }
+      else{
+        debounce(() => {
+          $shouldRedraw = true
+        }, 300)();
+      }
     }
   }
 </script>
 
 
-<div class='w-full text-xs text-green-500 bg-neutral-900 transition-all duration-300 ease {is_visible ? 'opacity-100 h-[auto] px-4 py-5' : 'opacity-0 h-[0px] p-0'}' >
+<div class='w-full text-xs text-green-500 bg-neutral-900 transition-all duration-300 ease overflow-hidden {is_visible ? 'opacity-100 h-[auto] px-2 py-5' : 'opacity-0 h-[0px] p-0'}' >
   <div class='flex relative place-content-between w-full h-[65px]  {is_visible ? 'block' : 'hidden'}'>
     <div class='absolute top-0 left-20 pr-20 p-2 w-full h-full flex place-content-between'>
       <div class='flex-shrink flex gap-10'>
@@ -125,7 +143,7 @@
             next
           </button>          
         </div>        
-        <div class='h-full w-full flex flex-col items-center justify-center'>
+        <div class='h-full  flex flex-col items-center justify-center border min-w-[300px] border-green-400'>
           {#if currentTrack === null}
             <IconParkOutlineLoadingThree font-size={24} class='animate-spin' />
           {:else}  
@@ -133,15 +151,6 @@
             <span class:marquee={is_playing}  >
               <p class='slow'>{`track by ${currentTrack.user.username}`}</p>                 
             </span>
-            <!-- <span >
-              <p class='fast'>{is_playing ? `♫ playing music that inspires you to hire me ♫` : "***"}</p>
-            </span>
-            <span class="w-full px-1 overflow-hidden {is_playing && currentTrack.title.length > 50 ? 'marquee' : 'text-center'}">
-              <a class='text-nowrap overflow-ellipsis mid' href={currentTrack.permalink_url}>{currentTrack.title} </a>
-            </span>
-            <span  >
-              <p class='slow'>{is_playing ? `track by ${currentTrack.user.username}` : "***"}</p>
-            </span> -->
           {/if}
         </div>
 
@@ -174,7 +183,7 @@
     <div class='absolute bottom-[0px] w-[100px] h-[2px] bg-neutral-900 z-10' />
 
     <div class='flex w-[73px] h-[100px] items-center' >
-      {#if render_sc_player}
+      {#if render_sc_player && is_visible}
         <iframe 
           id='soundcloud-iframe'
           class='w-full h-full'

@@ -5,9 +5,10 @@
 
 
 <footer>
-		<p>
-			Secrets are everywhere.
-		</p>
+		<links>
+			<a class='is_link capitalize' target="_blank" href="https://www.linkedin.com/in/allen-royston/">My LinkedIn</a>
+			<a class='is_link capitalize' target="_blank" href="https://github.com/allenJynRoyston">Or my Github</a>
+		</links>
 </footer>
 
 

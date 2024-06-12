@@ -27,7 +27,7 @@
 
 {#if render}
   <div class='flex' style='font-family: {$bodyFont.font}'>
-    <div class="h-full flex-grow  p-2 text-neutral-500 text-xs flex overflow-x-hidden {is_active ? 'overflow-y-auto' : 'overflow-y-hidden'}" style='max-height: {is_animating ? '100%' : `${container_height}px`}'>
+    <div class="h-full flex-grow  p-2 py-5 text-neutral-500 text-xs flex overflow-x-hidden {is_active ? 'overflow-y-auto' : 'overflow-y-hidden'}" style='max-height: {is_animating ? '100%' : `${container_height}px`}'>
       <ul class='flex flex-col gap-0'>
           {#each lines as _item, index}
             {#if index > 0}

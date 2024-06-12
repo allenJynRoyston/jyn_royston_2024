@@ -1,6 +1,6 @@
 <script lang='ts'>
 	import {onMount, tick} from 'svelte'
-  import {drawerState} from '$stores/store'
+  import {drawerState, shouldRedraw, shouldReparse} from '$stores/store'
   import { page } from '$app/stores';
 
 	import HTMLReader from '$components/HTMLReader.svelte';
@@ -25,6 +25,7 @@
 		depth: number
 		linkTo: string | null
 		stringWithoutTags: string | null
+    target: string | null,
     image: {
       title: string | null
       src: string | null
@@ -49,7 +50,7 @@
   function handleResize() {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
-			setMinHeight()
+			setMinHeight()      
     }, 500); 
   }
 
@@ -57,8 +58,8 @@
 	function toggleFlex(index: number) {  
     if(!is_animating)  
       is_animating = true;
-      var new_state:Array<boolean> = $drawerState.map((state, i) => {return i == index ? !state : state})
-      drawerState.update(new_state)
+      $drawerState = $drawerState.map((state, i) => {return i == index ? !state : state})
+      drawerState.update()
      
       setTimeout(() => {
         is_animating = false;
@@ -107,7 +108,9 @@
 				const linkTo:string | null = element.hasAttribute("href") ? element.getAttribute("href") : null
         const imageSrc:string | null = element.hasAttribute("src") ? element.getAttribute("src") : null
 				const imageTitle:string | null = element.hasAttribute("data-src-title") ? element.getAttribute("data-src-title") : null
+        const target:string | null = element.hasAttribute("target") ? element.getAttribute("target") : null
         const hasImage:boolean = imageSrc !== null && imageTitle !== null
+
 
 				// first, filters out any svelte-specific classes
 				classList.forEach(cn => {
@@ -123,6 +126,7 @@
 					tagName, 
 					includedClasses, 
 					depth: calculateDepth(element),
+          target,
 					linkTo,
 					stringWithoutTags: stringWithoutTags === "" ? null : stringWithoutTags,
           image: hasImage ? {
@@ -155,6 +159,14 @@
 			previous_route = String($page.route.id)
 			setHtmlContent()
 		}
+
+		if(!$shouldRedraw && is_mounted){
+			handleResize()
+		}    
+
+    if($shouldReparse){      
+      setHtmlContent()
+    }    
 	}
 
 </script>

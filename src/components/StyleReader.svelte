@@ -1,6 +1,5 @@
 <script lang='ts'>
-  import { page } from '$app/stores';
-  import { onMount, tick } from 'svelte'
+  import { onMount } from 'svelte'
   import { linkColor, highlightColor, bodyColor, bodyFont, imgTagColor } from '$stores/store'
   import CodeFormat from '$components/CodeFormat.svelte'
 

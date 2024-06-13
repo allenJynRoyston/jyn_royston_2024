@@ -1,9 +1,10 @@
 <script lang='ts'>
   import { tick } from 'svelte'
   import { page } from '$app/stores';
-  import { linkColor, highlightColor, imgTagColor, bodyColor, drawerSidebarState, shouldRedraw } from '$stores/store'
+  import { linkColor, highlightColor, imgTagColor, bodyColor, drawerSidebarState, shouldRedraw, renderIsVisible } from '$stores/store'
 
   import CodeFormat from '$components/CodeFormat.svelte'
+  import Render from '$components/Render.svelte';
 
   export let dataset:Array<Object | any> = []
   export let container_height:number = 0
@@ -15,8 +16,8 @@
   var sidebar_is_open:boolean = false
   var sidebar_content:string | null = null
   var sidebar_is_busy:boolean = false
-
-
+  var content_inner_html:string|null = null
+ 
   linkColor.subscribe(_val => {updateRender()})
   highlightColor.subscribe(_val => {updateRender()})
   bodyColor.subscribe(_val => {updateRender()})
@@ -68,6 +69,10 @@
     return `${str}-${$bodyColor.color}-${$bodyColor.weight}`
   }
 
+  function get_li_color(str:string = 'text'):string {
+    return `${str}-${$bodyColor.color}-${$bodyColor.weight}`
+  }  
+
   function get_image_color(str:string = 'text'):string {
     return `${str}-${$imgTagColor.color}-${$imgTagColor.weight}`
   }    
@@ -100,6 +105,7 @@
 
   $: {
     dataset_is_updated = dataset.length > 0
+    content_inner_html = $renderIsVisible ? document.querySelector('#page-content')?.innerHTML || null : null
   }
 
 
@@ -107,7 +113,7 @@
 
 <CodeFormat onSidebarClose={onSidebarClose} {sidebar_is_open} {sidebar_content} {container_height} {is_animating} {is_active}>
   <!-- CONTENT -->
-  <div slot='content'>
+  <div id='html-content' slot='content'>
     {#if dataset_is_updated && render}
       {#each dataset as data, index}
         {#if index > 0}
@@ -142,3 +148,6 @@
     </div>
   </div>
 </CodeFormat>
+
+
+<Render show={$renderIsVisible} content={content_inner_html} />

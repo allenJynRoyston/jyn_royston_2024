@@ -18,8 +18,10 @@ function fetchFromLocalStorage(key:string):any{
 
 
 // --------------------------
+export const renderIsVisible = writable(false)
 export const shouldRedraw = writable(false)
 export const shouldReparse = writable(false)
+export const closeRender = writable(false)
 // --------------------------
 
 
@@ -83,8 +85,8 @@ function createTextColor(defaultState:ColorState) {
 
 export const bodyColor = createTextColor({color: "neutral", weight: 200})
 export const linkColor = createTextColor({color: "orange", weight: 500});
-export const imgTagColor = createTextColor({color: "blue", weight: 500});
-export const highlightColor = createTextColor({color: "green", weight: 500})
+export const imgTagColor = createTextColor({color: "orange", weight: 700});
+export const highlightColor = createTextColor({color: "orange", weight: 300})
 // --------------------------
 
 // --------------------------

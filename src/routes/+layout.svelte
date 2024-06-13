@@ -2,7 +2,7 @@
 	import './styles.css';
 	import {onMount, tick} from 'svelte'
 	import html2canvas from 'html2canvas';
-	import { drawerState, linkColor, highlightColor, bodyColor, imgTagColor, bodyFont, shouldRedraw  } from '$stores/store'
+	import { drawerState, linkColor, highlightColor, bodyColor, imgTagColor, bodyFont, shouldRedraw, renderIsVisible  } from '$stores/store'
 	import { page } from '$app/stores';
 
 	import TrueHeader from '$components/TrueHeader.svelte'
@@ -17,7 +17,7 @@
 	let previous_drawer_state:Array<boolean> = []
 	let show_secret:boolean = false
 	let is_mounted:boolean = false
-	
+	let is_rendered:boolean = true
 
 	let debounceTimeout: number | null = null
 	let innerDebounceTimeout:number | null = null
@@ -25,11 +25,12 @@
 	let previous_buffered_image:string|null = null
 	let buffered_image:string|null = null
 
-	bodyFont.subscribe(_val => {triggerRedraw()})
+
   linkColor.subscribe(_val => {triggerRedraw()})
   highlightColor.subscribe(_val => {triggerRedraw()})
   bodyColor.subscribe(_val => {triggerRedraw()})
   imgTagColor.subscribe(_val => {triggerRedraw()})	
+	bodyFont.subscribe(_val => {updateRender()})
 
 	onMount(() => {
 		is_mounted = true
@@ -87,7 +88,7 @@
 
 
 	async function triggerRedraw(delay: number = 1) {
-		if (typeof window !== 'undefined') {
+		if (typeof window !== 'undefined' && !$renderIsVisible) {
 				if (debounceTimeout !== null) {
 					clearTimeout(debounceTimeout);
 				}
@@ -124,6 +125,7 @@
 
 		if(previous_route !== $page.route.id && is_mounted){
 			previous_route = String($page.route.id)
+			$renderIsVisible = false
 			triggerRedraw()
 		}
 
@@ -135,31 +137,37 @@
 
 	}	
 
+  async function updateRender() {
+    is_rendered = false
+    await tick()
+    is_rendered = true
+  }  	
+
 </script>
 
+{#if is_rendered}
+	<div id="capture-area" class="flex flex-col h-screen w-screen bg-slate-800 overflow-hidden" style='font-family: {$bodyFont.font}'>
+		<div class='flex flex-col flex-grow'>
+			<TrueHeader />
+			<Prompt />
+			<MusicPlayer />
+		</div>	
 
-<div id="capture-area" class="flex flex-col h-screen w-screen bg-slate-800 overflow-hidden gap-1 min-w-[900px]">
-	<TrueHeader />
-	<Prompt />
-	<MusicPlayer />
-	
-	<div class='absolute bottom-40 p-2 w-full flex justify-center {show_secret ? '' : 'hidden'}' >
+		<div class='absolute bottom-40 p-2 w-full flex justify-center {show_secret ? '' : 'hidden'}' >
 			<button class='bg-red-600 text-white px-5 py-1 opacity-30 hover:opacity-50 animate-opacity ease duration-300'>???</button>
+		</div>
+
+		<div class="h-screen w-screen  border-t-slate-800 border-t-2">
+			<Drawers />
+		</div>
+
+		<div id="hidden-content" class="hidden">
+			<Header />
+			<slot></slot>
+			<Footer />
+		</div>
 	</div>
-
-	<div class="h-screen w-screen min-w-[900px]">
-		<Drawers />
-	</div>
-
-	<div id="hidden-content" class="hidden">
-		<Header />
-		<slot></slot>
-		<Footer />
-	</div>
-
-
-</div>
-
+{/if}
 
 
 
@@ -191,14 +199,14 @@
 			opacity: 0;
 		}
 		100% {
-			opacity: 0.3;
+			opacity: 0.2;
 		}
 	}
 
 
 	.fade-in {
 		animation: fade-in 700ms ease;
-		opacity: 0.3;
+		opacity: 0.2;
 	}
 
 

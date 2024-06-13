@@ -23,6 +23,7 @@
     stream_url: string;
   }
 
+  let script_loaded:boolean = false
   let render_sc_player:boolean = true
   let is_visible:boolean = false
   let is_playing:boolean = false
@@ -39,13 +40,35 @@
   let jukebox_index:number = 0
   
   onMount(() => {    
-    setupSC()
 
     window.addEventListener('keydown', handleKeydown);
 		return () => {
 			window.removeEventListener('keydown', handleKeydown)
 		}   
   })
+
+  async function loadSC(){
+    try{
+      await loadScript('https://w.soundcloud.com/player/api.js')
+      setupSC()
+      script_loaded = true
+      console.log("SC loaded correctly.")
+    }
+    catch(err){
+      console.error("Error loading correctly.")
+    }
+  }
+
+  // Function to load the script dynamically
+  function loadScript(url:string) {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = url;
+      script.onload = resolve;
+      script.onerror = reject;
+      document.body.appendChild(script);
+    });
+  }  
 
   function setupSC(){
     if(is_visible){
@@ -96,6 +119,9 @@
   }
 
   async function rerenderSC(){
+    if(!script_loaded){
+      await loadSC()
+    }
     is_playing = false
     currentTrack = null
     render_sc_player = false
@@ -129,7 +155,7 @@
 </script>
 
 
-<div class='w-full text-xs text-green-500 bg-neutral-900 transition-all duration-300 ease overflow-hidden {is_visible ? 'opacity-100 h-[auto] px-2 py-5' : 'opacity-0 h-[0px] p-0'}' >
+<div class='w-full text-xs text-green-500 bg-neutral-900 transition-all duration-300 ease overflow-hidden {is_visible ? 'opacity-100 h-[auto] px-2 py-5 border-t-green-900 border-t-2' : 'opacity-0 h-[0px] p-0'}' >
   <div class='flex relative place-content-between w-full h-[65px]  {is_visible ? 'block' : 'hidden'}'>
     <div class='absolute top-0 left-20 pr-20 p-2 w-full h-full flex place-content-between'>
       <div class='flex-shrink flex gap-10'>

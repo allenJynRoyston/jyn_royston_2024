@@ -1,0 +1,51 @@
+{
+  "list": [
+    {
+      "title": "Languages",
+      "items": [
+        { "emoji": "😄", "name": "Javascript | Typescript" },
+        { "emoji": "😄", "name": "GDScript (Godot)" },
+        { "emoji": "😐", "name": "Python" }
+      ]
+    },
+    {
+      "title": "Frontend",
+      "items": [
+        { "emoji": "😄", "name": "Svelte" },
+        { "emoji": "😄", "name": "React" },
+        { "emoji": "😄", "name": "Vue" }
+      ]
+    },
+    {
+      "title": "Design",
+      "items": [
+        { "emoji": "😄", "name": "Tailwind" },
+        { "emoji": "😄", "name": "Photoshop" },
+        { "emoji": "😄", "name": "Figma" }
+      ]
+    },
+    {
+      "title": "Backend",
+      "items": [
+        { "emoji": "😄", "name": "Node" },
+        { "emoji": "😄", "name": "NoSQL (MongoDB)" },
+        { "emoji": "😐", "name": "AWS" }
+      ]
+    },
+    {
+      "title": "Other Technologies",
+      "items": [
+        { "emoji": "😄", "name": "GIT" },
+        { "emoji": "😐", "name": "Docker" }
+      ]
+    },
+    {
+      "title": "Personal",
+      "items": [
+        { "emoji": "😄", "name": "Creative!" },
+        { "emoji": "😄", "name": "Easy to work with!" },
+        { "emoji": "😄", "name": "Definately not an AI!" }
+      ]
+    }
+  ]
+}

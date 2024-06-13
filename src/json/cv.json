@@ -1,0 +1,83 @@
+{
+  "list": [
+    {
+      "company": "METAFY",
+      "website": "https://metafy.gg",
+      "tasks": [
+        "Develop and maintain user-facing features for Metafy.gg's client-facing platform.",
+        "Implement responsive designs using modern HTML, CSS, and JavaScript frameworks (Svelte, specifically).",
+        "Collaborate with designers and backend engineers to create seamless user experiences.",
+        "Optimize application performance and ensure cross-browser compatibility.",
+        "Integrate APIs and third-party services to enhance platform functionality.",
+        "Write clean, reusable, and scalable code following best practices and design patterns.",
+        "Conduct code reviews and participate in team discussions to improve code quality and development processes.",
+        "Stay updated with the latest frontend technologies and industry trends.",
+        "Troubleshoot and debug issues reported by users or QA team.",
+        "Work in an agile environment, contribute to sprint planning, and meet project deadlines."
+      ]
+    },    
+    {
+      "company": "BEDE GAMING",
+      "website": "http://www.bedegaming.com",
+      "tasks": [
+        "Helped create a reusable component library with React for future Bede products.",
+        "Developed a site for upcoming German clients.",
+        "Refactored code, added new features, and fixed bugs for the largest Canadian client, OLG (http://www.olg.ca)."
+      ]
+    },
+    {
+      "company": "JP MORGAN",
+      "website": "http://www.jpmorgan.com",
+      "tasks": [
+        "Architected a web app for the REPO, DCM, and Markets departments.",
+        "Developed a JSON schema-driven, component-centric SPA using React.",
+        "Integrated JPM’s unique aesthetic toolkit into a ~100k lines of code app."
+      ]
+    },
+    {
+      "company": "EQTR",
+      "website": "http://www.eqtr.com",
+      "tasks": [
+        "Delivered several high-profile projects, including Belfry and Virgin Active.",
+        "Retooled or refactored legacy projects using modern web tools and standards.",
+        "Created high-quality email templates for banking customers, such as Clydesdale and Yorkshire Bank.",
+        "Mentored two junior developers.",
+        "Developed an email template generator tool, significantly optimizing resource utilization and enhancing operational efficiency."
+      ]
+    },
+    {
+      "company": "SKY",
+      "website": "http://www.sky.uk.co",
+      "tasks": [
+        "Developed a payment processing portal for an intrastore app using Aurelia.",
+        "Created custom components to process big data from databases with hundreds of thousands of entries."
+      ]
+    },
+    {
+      "company": "SOCIAL RUGRATS INC (defunct)",
+      "website": "http://www.socialrugrats.com",
+      "tasks": [
+        "Built the administrative portion of the site for +30 data entry personnel and 3 admins.",
+        "Integrated proprietary APIs, set roles and permissions, handled image resizing and uploading, and optimized the site.",
+        "Developed the frontend app after completing the administrative portion."
+      ]
+    },
+    {
+      "company": "GOOD DONE GREAT",
+      "website": "http://www.gooddonegreat.com",
+      "tasks": [
+        "Shifted the company to an Angular-centric framework, modernizing the sales platform from its aging Rollbase infrastructure.",
+        "Helped deliver up to $100K in contracts for major clients, including Toyota, Timken, Staples, and Monsanto.",
+        "Trained and mentored three junior developers."
+      ]
+    },
+    {
+      "company": "GRAVITYJACK",
+      "website": "http://www.gravityjack.com",
+      "tasks": [
+        "Worked as the company's sole web developer on projects ranging from Wordpress sites to in-house projects.",
+        "Developed AR (augmented reality) projects using Unity, deployed to Android and Apple devices."
+      ]
+    }
+  ]
+}

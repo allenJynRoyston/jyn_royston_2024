@@ -45,7 +45,7 @@
   }
 </script>
 
-<div class='w-full text-xs  text-green-500 bg-neutral-900 transition-all duration-300 ease {is_visible ? 'opacity-100 h-auto px-2 py-5' : 'opacity-0 h-[0px] p-0'}' >
+<div class='w-full text-xs  text-green-500 bg-neutral-900 transition-all duration-300 ease {is_visible ? 'opacity-100 h-auto px-2 py-5 border-t-green-900 border-t-2' : 'opacity-0 h-[0px] p-0'}' >
   <div class='flex place-content-between w-full  {is_visible ? 'block' : 'hidden'}'>
     <div class='flex w-[450px] items-center gap-1 border-green-500'>
       <TablerPrompt />

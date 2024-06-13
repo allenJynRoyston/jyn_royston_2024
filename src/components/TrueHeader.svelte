@@ -3,7 +3,6 @@
   import { page } from '$app/stores';
   import MdiWebBox from '~icons/mdi/web-box';
   import AntDesignLinkedinOutlined from '~icons/ant-design/linkedin-outlined';
-  import SolarCpuOutline from '~icons/solar/cpu-outline';
 
   let random_num:number = 0
 
@@ -34,15 +33,10 @@
     <a class='hover:text-white transition-color ease duration-300' href={$page.route.id}>{removeSlash($page.route.id || "/")}</a>
   </div>
 
-  <div class='flex w-[200px] gap-1 '>
-    <a href='https://www.linkedin.com/in/allen-royston/' target='_blank' class='flex gap-1 hover:text-white transition-color ease duration-300 items-center'>
+  <div class='flex w-[200px] gap-1 place-content-end'>
+    <a href='https://www.linkedin.com/in/allen-royston/' target='_blank' class='flex gap-1 hover:text-white transition-color ease duration-300 '>
       <AntDesignLinkedinOutlined />
       Jyn Royston - Dev For Hire
     </a>
-  </div>
-
-  <div class='flex gap-3'>
-    <span class='w-[100px]'>[REACTED]: 0/27</span>
-    <span class='w-[140px] flex gap-1 text-right justify-end items-center'> <SolarCpuOutline /> AI Core Usage: {7 + random_num}%</span>
   </div>
 </div>

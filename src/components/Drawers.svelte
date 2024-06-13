@@ -1,6 +1,6 @@
 <script lang='ts'>
 	import {onMount, tick} from 'svelte'
-  import {drawerState, shouldRedraw, shouldReparse} from '$stores/store'
+  import {drawerState, shouldRedraw, shouldReparse, closeRender, renderIsVisible} from '$stores/store'
   import { page } from '$app/stores';
 
 	import HTMLReader from '$components/HTMLReader.svelte';
@@ -8,7 +8,8 @@
   import StyleReader from '$components/StyleReader.svelte';
 
 	const section_classes:string = "drawer overflow-y-hidden relative min-h-[50px] transition-all duration-500 ease"
-  const button_classes:string = "absolute text-xs top-2 right-6 px-4 py-2 w-20 bg-blue-500 hover:bg-blue-700 text-white rounded-none"
+  const button_container_classes:string = "absolute text-xs top-2 right-6"
+  const button_classes:string = "px-4 py-2 w-[100px] bg-blue-500 hover:bg-blue-700 text-white rounded-none ml-1"
 
 	// let flex_states:Array<boolean> = $drawerState;
 	let section_heights:Array<number> = [0, 0, 0]	
@@ -32,6 +33,8 @@
     } | null
   }
 
+  let currentHash:string
+
 	// get and set min_heights when component is ready
 	onMount(() => {    
     is_mounted = true
@@ -41,11 +44,26 @@
 		  setMinHeight()    
     }, 1)
 
+    currentHash = window.location.hash;
+
+    window.addEventListener('hashchange', handleHashChange);
     window.addEventListener('resize', handleResize)
+
 		return () => {
+      window.removeEventListener('hashchange', handleHashChange);
 			window.removeEventListener('resize', handleResize)
 		}    
 	})
+  
+  // Function to handle hash change
+  function handleHashChange() {
+    currentHash = window.location.hash;
+    if(currentHash === '#render'){
+      $renderIsVisible = true
+      return
+    } 
+    $renderIsVisible = false
+  }  
 
   function handleResize() {
     clearTimeout(timeoutId);
@@ -157,6 +175,7 @@
 	$:{
 		if(previous_route !== $page.route.id && is_mounted){
 			previous_route = String($page.route.id)
+      window.location.hash = '';
 			setHtmlContent()
 		}
 
@@ -167,6 +186,7 @@
     if($shouldReparse){      
       setHtmlContent()
     }    
+ 
 	}
 
 </script>
@@ -178,34 +198,46 @@
     <section class='{section_classes} {applyExpandClasses($drawerState[0])}'>
       <div class="transition-all p-0 {applyInnerClasses($drawerState[0])}">
         {#if is_rendred}
-          <HTMLReader dataset={content_list} container_height={section_heights[0]} {is_animating} is_active={$drawerState[0]} />
+          <HTMLReader dataset={content_list} container_height={section_heights[0]} {is_animating} is_active={$drawerState[0]}/>
         {/if}
       </div>
-      <a href='#code'>
-        <button class={button_classes} on:click="{() => toggleFlex(0)}">
-          HTML
-        </button>
-      </a>    
+      <div class={button_container_classes}>
+        <div class='flex'>
+          <a href='#render'>
+            <button class='{button_classes} bg-red-600 hover:bg-red-800 disabled:opacity-20' disabled={!$drawerState[0]} on:click={() => {$renderIsVisible = true}}>
+              RENDER
+            </button>
+          </a>
+                  
+          <button class={button_classes} on:click="{() => toggleFlex(0)}">
+            HTML
+          </button>
+        </div>
+      </div>    
     </section>
     <section class='{section_classes} {applyExpandClasses($drawerState[1])}'>
       <div class="transition-all p-0 {applyInnerClasses($drawerState[1])}">
         <StyleReader container_height={section_heights[1]} {is_animating} is_active={$drawerState[1]} />
       </div>
-      <a href='#code'>
-        <button class={button_classes} on:click="{() => toggleFlex(1)}">
-          CSS
-        </button>
-      </a>    
+      <div class={button_container_classes}>
+        <div class='flex'>
+          <button class={button_classes} on:click="{() => toggleFlex(1)}">
+            CSS
+          </button>
+        </div>    
+      </div>
     </section>  
     <section class='{section_classes} {applyExpandClasses($drawerState[2])}'>
       <div class="transition-all p-0 {applyInnerClasses($drawerState[2])}">
         <CodeReader container_height={section_heights[2]} {is_animating} is_active={$drawerState[2]} />
       </div>
-      <a href='#code'>
-        <button class={button_classes} on:click="{() => toggleFlex(2)}">
-          JS
-        </button>
-      </a>      
+      <div class={button_container_classes}>
+        <div class='flex'>
+          <button class={button_classes} on:click="{() => toggleFlex(2)}">
+            JS
+          </button>
+        </div>
+      </div>      
     </section> 
   </div>
 {/if}

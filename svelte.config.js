@@ -10,7 +10,8 @@ const config = {
 		adapter: adapter(),
 		alias: {
       $components: "src/components",
-			$stores: "src/stores"
+			$stores: "src/stores",
+			$json: "src/json"
     },
 	}
 };

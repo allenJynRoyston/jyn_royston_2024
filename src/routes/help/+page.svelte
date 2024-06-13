@@ -19,18 +19,22 @@
 </script>
 
 
-<section>
-		<h1 class="is_body">{$unlockedStateDict.enable_help ? 'HELP' : 'UNABLE TO ACCESS'}</h1>
+<section id='page-content'>
+		<center>
+			<h1 class="is_body">{$unlockedStateDict.enable_help ? 'HELP' : 'UNABLE TO ACCESS'}</h1>
+		</center>
 		{#if $unlockedStateDict.enable_help}
+			
 			<div>
 					<!-- Languages Section -->
 					{#if !$unlockedStateDict.enable_console}
 						<h2 class="is_body">[REDACTED]</h2>	
 					{:else}
-						<h2 class="is_body">Using the console</h2>
 						<hr>
+						<h2 class="is_body">Using the console</h2>
 						<p class="is_highlight">Pressing the [F1] key opens console</p>
 						<p class="is_highlight">Available commands</p>
+						<hr>
 						<ul>
 							<li>[REDACTED]</li>
 							<li class='is_highlight'>music</li>

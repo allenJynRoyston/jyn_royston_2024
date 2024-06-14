@@ -1,6 +1,6 @@
 <script lang='ts'>
   import {onMount, tick} from 'svelte'
-  import {shouldRedraw} from '$stores/store'
+  import {shouldRedraw, disableKeyboardInput, consoleUnlockedStateDict} from '$stores/store'
   import IcBaselinePlayCircle from '~icons/ic/baseline-play-circle';
   import CarbonPauseOutline from '~icons/carbon/pause-outline';
   import CarbonCloseOutline from '~icons/carbon/close-outline';
@@ -8,6 +8,7 @@
   import IcomoonFreeNext from '~icons/icomoon-free/next';
   import IcomoonFreePrevious from '~icons/icomoon-free/previous';  
   import IconParkOutlineLoadingThree from '~icons/icon-park-outline/loading-three';
+  import Console from './Console.svelte';
 
   type SoundCloudTrack = {
     id: number;
@@ -32,11 +33,14 @@
   let jukebox_list:Array<string> = [
     '842651413',
     '1555483228',
-    '842651362',   
+    '842651362', 
+    '160498111',    
     '842651308', 
     '1555482853',
   ]
 
+
+  
   let jukebox_index:number = 0
   
   onMount(() => {    
@@ -88,7 +92,11 @@
 
       player.bind(SC.Widget.Events.READY, function() {
         player.getCurrentSound(function(_currentTrack:SoundCloudTrack) {
+          if(_currentTrack.id === 160498111){
+            _currentTrack.user.username += "  🔑 OBLIVION_AWAITS_ALL"
+          }
           currentTrack = _currentTrack
+
           $shouldRedraw = true  
         });
       });      
@@ -96,7 +104,7 @@
   }
 
   function handleKeydown(event:KeyboardEvent) {
-    if (event.key === 'F2') {
+    if ((event.key === 'm' || event.key === 'M') && !$disableKeyboardInput && $consoleUnlockedStateDict.unlocked_music_player) {
       event.preventDefault(); // Prevent the default browser action (e.g., saving the page)
       is_visible = !is_visible
     }
@@ -182,7 +190,6 @@
 
       </div>
       <div class='h-full flex-shrink items-center flex'>
-        <TablerSquareF2Filled class='text-xl'/>
         <button class='text-lg px-5' on:click={() => {is_visible = false}}>
           <CarbonCloseOutline />
         </button>

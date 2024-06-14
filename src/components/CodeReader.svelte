@@ -1,8 +1,9 @@
 <script lang='ts'>
   import { onMount } from 'svelte'
-  import { unlockedState } from '$stores/store'
+  import { codeState, consoleUnlockedState, modalState, consoleUnlockedStateDict } from '$stores/store'
   import CodeFormat from '$components/CodeFormat.svelte'
   import CarbonCloseOutline from '~icons/carbon/close-outline';
+  import type { ModalContent } from '$stores/store'
 
   export let container_height:number = 0
   export let is_animating:boolean = false
@@ -22,11 +23,6 @@
     left: number
   }
 
-  interface DialogList{
-    label: string, 
-    val: any,
-    onClick: (val: any) => void
-  }
 
   let linesArray:Array<StyleDataSet> = []
   
@@ -35,7 +31,7 @@
     left: 0
   }
 
-  let popupItems:Array<DialogList> = []
+  let popupItems:ModalContent[] = []
   let showPopup:boolean = false
 
   onMount(() => {
@@ -44,9 +40,18 @@
 
   function parseLines(){
     var tag:string = ""
-    $unlockedState.forEach(({var_type = 'let', label, state}:any, index) => {
+
+    
+    $codeState.forEach(({var_type = 'let', label, state}:any, index) => {
       tag += `${var_type} *${label}* = !${state}! ?set_true_false? \n`
     });    
+    
+    if($consoleUnlockedStateDict.unlocked_unknown_progress){
+      $consoleUnlockedState.forEach(({var_type = 'const', label, state}:any, index) => {
+        tag += `const *${state ? label : "[LOCKED]"}* = !${state ? state : '[LOCKED]'}! ?is_const? \n`
+      });        
+    }
+
     linesArray = parseStyleText(tag)
   }
 
@@ -107,12 +112,12 @@
 
   async function changeProperty(event:Event, {trigger, line}:StyleDataSet){
     const target:EventTarget = event.target as EventTarget
-    let dropdownlist:Array<DialogList> = []
-    showPopup = true  
-
+    let dropdownlist:ModalContent[] = []
+    
     switch (trigger) {
       // -----------------
       case 'set_true_false': 
+        showPopup = true  
         dropdownlist = [
           {
             label: 'true',
@@ -125,8 +130,8 @@
         ].map(item => ({
           ...item,
           onClick: (val:any) => { 
-            $unlockedState[line].state = val
-            unlockedState.update()
+            $codeState[line].state = val
+            codeState.update()
             parseLines()
             showPopup = false 
           }
@@ -134,22 +139,24 @@
 
         setupDialogBox(target, line, dropdownlist)
         break
-      // -----------------      
+      // -----------------   
+      case 'is_const':
+        break
     }  
   }
 
-
-
-  function setupDialogBox(target:EventTarget, line:number, _popupItems:Array<DialogList>){
-      const element = target as HTMLElement
-      const parentElement = element.parentNode as HTMLElement;
-      const rect = element.getBoundingClientRect()
-      absolutePosition = { 
-        top: line * parentElement.getBoundingClientRect().height,
-        left: rect.left 
-      }
-      popupItems = _popupItems
+  function setupDialogBox(target:EventTarget, line:number, items:ModalContent[]){
+      $modalState.show = true
+      $modalState.header = $codeState[line].label
+      $modalState.items = items    
   }  
+
+  $: {
+    if($consoleUnlockedStateDict.unlocked_unknown_progress || $consoleUnlockedStateDict.unlocked_unknown_progress){
+      parseLines()
+    }
+  }
+  
 
 </script>
 

@@ -119,7 +119,9 @@
         {#if index > 0}
           <li class="text-neutral-500 text-xs flex ">
             <span class='w-full' style="padding-left:{(data.depth - 4) * 10}px"  >         
-              {data.tagName}
+              {#if data.tagName !== "br"}
+                {data.tagName}
+              {/if}
 
               {#if is_img(data)}
                 <button class='{get_image_color()} hover:text-blue-300 transition-colors duration-300' on:click={() => viewImage(data.image.src)}>

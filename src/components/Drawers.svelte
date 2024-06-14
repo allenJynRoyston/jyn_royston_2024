@@ -1,6 +1,6 @@
 <script lang='ts'>
 	import {onMount, tick} from 'svelte'
-  import {drawerState, shouldRedraw, shouldReparse, closeRender, renderIsVisible} from '$stores/store'
+  import {drawerState, shouldRedraw, shouldReparse, renderIsVisible, codeStateDict} from '$stores/store'
   import { page } from '$app/stores';
 
 	import HTMLReader from '$components/HTMLReader.svelte';
@@ -33,7 +33,6 @@
     } | null
   }
 
-  let currentHash:string
 
 	// get and set min_heights when component is ready
 	onMount(() => {    
@@ -44,27 +43,14 @@
 		  setMinHeight()    
     }, 1)
 
-    currentHash = window.location.hash;
 
-    window.addEventListener('hashchange', handleHashChange);
     window.addEventListener('resize', handleResize)
 
 		return () => {
-      window.removeEventListener('hashchange', handleHashChange);
 			window.removeEventListener('resize', handleResize)
 		}    
 	})
   
-  // Function to handle hash change
-  function handleHashChange() {
-    currentHash = window.location.hash;
-    if(currentHash === '#render'){
-      $renderIsVisible = true
-      return
-    } 
-    $renderIsVisible = false
-  }  
-
   function handleResize() {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
@@ -203,11 +189,13 @@
       </div>
       <div class={button_container_classes}>
         <div class='flex'>
-          <a href='#render'>
-            <button class='{button_classes} bg-red-600 hover:bg-red-800 disabled:opacity-20' disabled={!$drawerState[0]} on:click={() => {$renderIsVisible = true}}>
-              RENDER
-            </button>
-          </a>
+          {#if $codeStateDict?.enable_render_mode || false}
+            <a href='#render'>
+              <button class='{button_classes} bg-red-600 hover:bg-red-800 disabled:opacity-20' disabled={!$drawerState[0]} on:click={() => {$renderIsVisible = true}}>
+                RENDER
+              </button>
+            </a>
+            {/if}
                   
           <button class={button_classes} on:click="{() => toggleFlex(0)}">
             HTML

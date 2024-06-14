@@ -24,18 +24,18 @@
 
 </script>
 
-<div class='w-full text-xs p-2 text-green-500 bg-neutral-900 flex place-content-between' >
+<div class='w-full text-xs p-2 text-green-500 bg-neutral-900 flex place-content-between items-center' >
   
   <div class='flex w-[150px] items-center'>
-    <MdiWebBox />/
+    <MdiWebBox font-size={16} />/
     <a class='hover:text-white transition-color ease duration-300' href='/'>{removeSlash('/home')}</a>
     <span>/</span>
     <a class='hover:text-white transition-color ease duration-300' href={$page.route.id}>{removeSlash($page.route.id || "/")}</a>
   </div>
 
   <div class='flex w-[200px] gap-1 place-content-end'>
-    <a href='https://www.linkedin.com/in/allen-royston/' target='_blank' class='flex gap-1 hover:text-white transition-color ease duration-300 '>
-      <AntDesignLinkedinOutlined />
+    <a href='https://www.linkedin.com/in/allen-royston/' target='_blank' class='flex gap-1 hover:text-white transition-color ease duration-300 items-center'>
+      <AntDesignLinkedinOutlined font-size={16} />
       Jyn Royston - Dev For Hire
     </a>
   </div>

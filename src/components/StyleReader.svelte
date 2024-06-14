@@ -1,6 +1,8 @@
 <script lang='ts'>
   import { onMount } from 'svelte'
-  import { linkColor, highlightColor, bodyColor, bodyFont, imgTagColor } from '$stores/store'
+  import { linkColor, highlightColor, bodyColor, bodyFont, imgTagColor, modalState } from '$stores/store'
+  import type { ModalContent } from '$stores/store'
+
   import CodeFormat from '$components/CodeFormat.svelte'
 
   export let container_height:number = 0
@@ -21,12 +23,6 @@
     left: number
   }
 
-  interface DialogList{
-    label: string,
-    val: any,
-    onClick: (val: any) => void
-  }
-
   let linesArray:Array<StyleDataSet> = []
   
   let absolutePosition:AbsolutePosition = {
@@ -34,7 +30,7 @@
     left: 0
   }
 
-  let popupItems:Array<DialogList> = []
+  let popupItems:Array<ModalContent> = []
   let showPopup:boolean = false
 
   onMount(() => {
@@ -134,7 +130,7 @@
 
   async function changeProperty(event:Event, {trigger, line}:StyleDataSet){
     const target:EventTarget = event.target as EventTarget
-    let dropdownlist:Array<DialogList> = []
+    let dropdownlist:ModalContent[] = []
     showPopup = true  
 
     function update_color(color:string, prop:any, propvar:any){
@@ -155,10 +151,8 @@
       showPopup = false
     }   
 
-    // blue|green|red|purple|neutral|slate|orange
-
     function colorOptions(prop:any, propvar:any){
-      let dropdownlist:Array<DialogList> = [
+      let dropdownlist:ModalContent[] = [
           {
             label: "neutral",
           },            
@@ -191,7 +185,7 @@
 
 
     function weightOptions(prop:any, propvar:any){
-      let dropdownlist:Array<DialogList> = [50,100,200,300,400,500,600,700].map(item => ({
+      let dropdownlist:ModalContent[] = [50,100,200,300,400,500,600,700].map(item => ({
         label: String(item),
         val: item,
         onClick: (val:any) => { update_weight(val, prop, propvar) }
@@ -255,15 +249,9 @@
   }
 
 
-  function setupDialogBox(target:EventTarget, line:number, _popupItems:Array<DialogList>){
-      const element = target as HTMLElement
-      const parentElement = element.parentNode as HTMLElement;
-      const rect = element.getBoundingClientRect()
-      absolutePosition = { 
-        top: line * parentElement.getBoundingClientRect().height,
-        left: rect.left 
-      }
-      popupItems = _popupItems
+  function setupDialogBox(target:EventTarget, line:number, items:ModalContent[]){
+    $modalState.show = true
+    $modalState.items = items
   }  
 
 </script>
@@ -279,7 +267,7 @@
               {@html extractPartialString(item)}
             </button>
           {:else}
-          <span class='text-inherit'>{item.text}</span>
+            <span class='text-inherit'>{item.text}</span>
           {/if}
         </span>
       </li>

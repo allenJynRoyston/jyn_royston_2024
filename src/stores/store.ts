@@ -1,13 +1,13 @@
 import { writable, derived } from 'svelte/store';
 
 // --------------------------
-function saveToLocalStorage(key:string, data:any){
+export function saveToLocalStorage(key:string, data:any){
 	if (typeof window !== 'undefined' && window.localStorage) {
 		localStorage.setItem(key, JSON.stringify(data));
 	}
 }
 
-function fetchFromLocalStorage(key:string):any{
+export function fetchFromLocalStorage(key:string):any{
 	if (typeof window !== 'undefined' && window.localStorage) {
 		var res:string | null = localStorage.getItem(key)
 		return res === null ? null : JSON.parse(res)
@@ -22,6 +22,38 @@ export const renderIsVisible = writable(false)
 export const shouldRedraw = writable(false)
 export const shouldReparse = writable(false)
 export const closeRender = writable(false)
+export const disableKeyboardInput = writable(false)
+// --------------------------
+
+
+// --------------------------
+type ModalContent = {
+	label: string,
+	val: any,
+	onClick: (val: any) => void
+}
+
+type ModalState = {
+	show: boolean
+	header?:string
+	items?: ModalContent[]
+}
+
+function createModalState(defaultState:ModalState = {show:false}) {
+	const { subscribe, set, update } = writable(defaultState);
+
+	return {
+		subscribe,
+		set,
+    update: () => update((new_state:ModalState):ModalState => {			
+      return new_state;
+    }),		
+		reset: () => set(defaultState)
+	};
+}
+
+export type { ModalContent, ModalState };
+export const modalState = createModalState()
 // --------------------------
 
 
@@ -96,20 +128,17 @@ export type UnlockState = {
 }
 
 const unlockStateList:Array<{label:string, var_type?:string}> = [
-	{label: "secrets_are_safe", var_type: 'const'},
+	{label: "enable_render_mode"},
+	{label: "enable_secret_button" },
 	{label: "enable_help" },
 	{label: "enable_console" },
-	{label: "extra_style_options" },
 ]
 
-
-
-function createUnlockedState(listData:Array<{label:string, var_type?:string}>) {
-	var saved_state:Array<boolean> | null = fetchFromLocalStorage('unlockables')
+function createCodeState(listData:Array<{label:string, var_type?:string}>) {
+	var saved_state:Array<boolean> | null = fetchFromLocalStorage('code')
 	
-
 	const defaultState:Array<UnlockState> = listData.map(({var_type = 'let', label}, index) => {
-		return {var_type, label, "state": saved_state === null ? false : saved_state[index]}
+		return {var_type, label, "state": saved_state === null ? index === 0 : saved_state[index] || false}
 	})
 
 	const { subscribe, set, update } = writable(defaultState);
@@ -119,20 +148,20 @@ function createUnlockedState(listData:Array<{label:string, var_type?:string}>) {
 		set,
     update: () => update((new_state) => {
 			var stateMap = new_state.map(({state}) => {return state})
-			saveToLocalStorage('unlockables', stateMap)
+			saveToLocalStorage('code', stateMap)
       return new_state;
     }),
 		reset: () => set(defaultState)
 	};
 }
 
-export const unlockedState = createUnlockedState(unlockStateList)
+export const codeState = createCodeState(unlockStateList)
 
-export const unlockedStateDict = derived(
-  unlockedState,
-  ($unlockedState: UnlockState[]) => {
+export const codeStateDict = derived(
+  codeState,
+  ($codeState: UnlockState[]) => {
     const stateDict: { [key: string]: boolean } = {};
-    $unlockedState.forEach((item) => {
+    $codeState.forEach((item) => {
       stateDict[item.label] = item.state;
     });
     return stateDict;
@@ -141,5 +170,48 @@ export const unlockedStateDict = derived(
 // --------------------------
 
 
+// --------------------------
+const consoleUnlockList:Array<{label:string}> = [
+	{label: "unlocked_unknown_progress"},
+	{label: "unlocked_music_player"},
+	{label: "unlocked_hidden_job"},
+	{label: "hidden_local_storage_key"},
+	{label: "the_lost_ritual"}
+]
+
+function createConsoleUnlockedState(listData:Array<{label:string}>) {
+	var saved_state:Array<boolean> | null = fetchFromLocalStorage('console')
+	
+	const defaultState:Array<UnlockState> = listData.map(({label}, index) => {
+		return {label, "state": saved_state === null ? false : saved_state[index] || false}
+	})
+
+	const { subscribe, set, update } = writable(defaultState);
+
+	return {
+		subscribe,
+		set,
+    update: () => update((new_state) => {
+			var stateMap = new_state.map(({state}) => {return state})
+			saveToLocalStorage('console', stateMap)
+      return new_state;
+    }),
+		reset: () => set(defaultState)
+	};
+}
+
+export const consoleUnlockedState = createConsoleUnlockedState(consoleUnlockList)
+
+export const consoleUnlockedStateDict = derived(
+  consoleUnlockedState,
+  ($consoleUnlockedState: UnlockState[]) => {
+    const stateDict: { [key: string]: boolean } = {};
+    $consoleUnlockedState.forEach((item) => {
+      stateDict[item.label] = item.state;
+    });
+    return stateDict;
+  }
+);
+// --------------------------
 
 

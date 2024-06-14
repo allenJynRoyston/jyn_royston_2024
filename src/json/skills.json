@@ -44,8 +44,15 @@
       "items": [
         { "emoji": "😄", "name": "Creative!" },
         { "emoji": "😄", "name": "Easy to work with!" },
-        { "emoji": "😄", "name": "Definately not an AI!" }
+        { "emoji": "😄", "name": "Definately not an AI!" },
+        { "emoji": "🙃", "name": "[REDACTED]" }
       ]
-    }
+    },
+    {
+      "title": "???",
+      "items": [
+        { "emoji": "🔑", "name": "AN_EVIL_IS_SEALED_AWAY" }
+      ]
+    }    
   ]
 }

@@ -11,14 +11,14 @@
 	section#page-content
 		center
 			h1.is_highlight Jyn Royston
+			h2.is_highlight Developer 
 			img(src='https://media.licdn.com/dms/image/C4E03AQGJT3TlIEB5xg/profile-displayphoto-shrink_800_800/0/1516982077919?e=1723680000&v=beta&t=PEkI-WTlVxDchGfFVvq_w11aPC-LasVKmLDm8H4hAC8' alt="alt tag" data-src-title='(This is me)')
 		br
 		hr
 		br
 		center
-			p.is_body Fullstack developer | Indie game developer
-			p.is_body Years of experience
-			p.is_body Reliable ⭐ Creative ⭐ Probably Not an A.I 
+			p.is_body Fullstack developer | Indie game developer			
+			p.is_body Reliable ⭐ Creative ⭐ Haunted
 		hr
 		
 </template>

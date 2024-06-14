@@ -1,7 +1,9 @@
-<script>
+<script lang='ts'>
   import { onMount } from 'svelte';
 
   let requestId
+  let counter:number = 0
+  let fadeColor:number = 0
 
   // Function to calculate direction vector
   const dir = function(l, radi) {
@@ -9,7 +11,6 @@
   };
 
   
-
   onMount(() => {
     let canvas = document.getElementById('canvas-fx');
     let ctx = canvas.getContext('2d');
@@ -17,9 +18,6 @@
     // Set initial canvas size
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
-    const mw = (Math.PI / 3) * 7 / canvas.width;
-    const mh = (Math.PI / 2) / canvas.height;
 
     // Define the Parts class
     function Parts(x, y) {
@@ -55,15 +53,35 @@
 
     // Initialize array of Parts objects
     const _arr3 = [];
-    for (let i = 0; i < 4500; i++) {
+    for (let i = 0; i < 5000; i++) {
       _arr3.push(new Parts(Math.floor(Math.random() * canvas.width), Math.floor(Math.random() * canvas.height)));
     }
 
-    // Set styles and start animation loop
+    // set colors and fill
     ctx.fillStyle = 'hsla(0, 0%, 0%, .04)';
-    ctx.strokeStyle = 'hsla(118, 95%, 5%, 1)';
+    ctx.strokeStyle = `hsla(${Math.floor(Math.random() * 256)}, 95%, 5%, 1)`;      
+
+    function changeColor(){
+      fadeColor += 10
+      ctx.strokeStyle = `hsla(${fadeColor}, 95%, 5%, 1)`;  
+      if(fadeColor > 255){
+        fadeColor = 0
+      }    
+    }
+
 
     function go() {
+      if(counter === 0){
+        changeColor()
+      }
+      
+      counter ++
+
+      if(counter > 60){
+        counter = 0
+      }
+
+
       ctx.globalCompositeOperation = 'source-over';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.globalCompositeOperation = 'lighter';

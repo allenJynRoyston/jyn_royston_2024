@@ -8,7 +8,7 @@
   export let sidebar_content:string | null = null
   export let onSidebarClose: () => void = () => {}
 
-  let lines:Array<number> = new Array(100).fill(0)
+  let lines:Array<number> = new Array(90).fill(0)
   
 
 </script>

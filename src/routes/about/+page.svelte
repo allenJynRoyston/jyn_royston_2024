@@ -48,9 +48,10 @@
 <template lang="pug">	
 	section#page-content
 		center
-			h1.is_body Well hello there!
+			h1.is_body Why hello there!
 			img(src='https://media.tenor.com/thlpKlB8HVQAAAAi/obi-wan-transparent.gif' alt="alt tag" data-src-title='👋👋👋')
 		hr
+		br
 		p.is_body I'm a passionate web developer with a knack for creating dynamic and user-friendly websites with over 10+ years of experience.  
 		p.is_body (To be exact, it's been {dateRef.years} years, {dateRef.months} months, and {dateRef.days} days to date)!
 		p.is_body With a solid foundation in both front-end and back-end technologies, I specialize in building responsive and engaging web applications.

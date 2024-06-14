@@ -3,7 +3,8 @@
   import {onMount} from 'svelte'
   import { page } from '$app/stores';
   import { spring, tweened  } from 'svelte/motion';
-  import {shouldRedraw, renderIsVisible} from '$stores/store'
+  import {shouldRedraw, renderIsVisible, consoleUnlockedState, consoleUnlockedStateDict} from '$stores/store'
+  import PopupFrame from '$components/PopupFrame.svelte'
   import IconParkOutlineLoadingThree from '~icons/icon-park-outline/loading-three';
   import CarbonCloseOutline from '~icons/carbon/close-outline';
 
@@ -12,6 +13,10 @@
   export let content:string|null 
 
   let is_animating:boolean = false
+  let opacity = tweened (0, { duration: 1000 });
+  let loadingbar = tweened (0, { duration: 700 });  
+  let pos = spring({ x: 0, y: 0 }, { stiffness: 0.1, damping: 0.2 });
+  let secrets_found:number = 0
 
   interface ClassStyles {
     [key: string]: string; // Key is class name, value is corresponding inline style
@@ -108,45 +113,46 @@
     return finalHTML;
   }  
 
+  function onAnimationComplete(){
+    is_animating = false
+    opacity.set(1)
+    pos.set({ x: 10, y: 0 });
+    $shouldRedraw = true
+  }
 
-  let pos = spring({ x: 0, y: 0 }, { stiffness: 0.1, damping: 0.25 });
-  let opacity = tweened (0, { duration: 1000 });
-  let loadingbar = tweened (0, { duration: 700 });
+
 
   $:{
     if(show){
-      opacity = tweened (0, { duration: 1000 });
-      loadingbar = tweened (0, { duration: 700 });
-
+      // on show, set animation to true and start loadingbar/opacity fade in
+      opacity = tweened (0, { duration: 700 });
+      loadingbar = tweened (0, { duration: 600 });
       is_animating = true
-      pos.set({ x: 0, y: 50 });
       loadingbar.set(100)
-      setTimeout(() => {
-        is_animating = false
-        opacity.set(1)
-      }, 1000)
     }
     else{
+      // reset to 0 
       opacity = tweened (0, { duration: 0 });
       loadingbar = tweened (0, { duration: 0 });
-
-      pos.set({ x: 0, y: 0 })
+      pos.set({ x: 0, y: 0 });
       opacity.set(0)
       loadingbar.set(0)
     }
+
+    secrets_found = $consoleUnlockedState.filter(item => item.state === true).length
   }
 
 </script>
 
 
-<div id='render-content' class="fixed flex items-center justify-center top-0 left-0 w-full h-full bg-black text-white {show ? 'z-50' : '-z-10'}" >
+<div id='render-content' class="fixed flex items-center justify-center top-0 left-0 w-full h-full bg-black text-white {show ? 'z-50 opacity-90' : '-z-10 hidden'}" >
 
   {#if show && !is_animating}
     <CanvasFx />
   {/if}
 
 
-  <div class="w-full h-full overflow-hidden overflow-y-auto p-4 z-30" style="opacity: {$opacity}">
+  <div class="w-full h-full overflow-hidden overflow-y-auto p-4 z-30" style="opacity: {$opacity}; transform: translate({$pos.x-10}px, {$pos.y}px)">
     {@html parseContent(content)}   
   </div>
 
@@ -170,7 +176,7 @@
 
   
   {#if is_animating}
-    <div class="modal absolute bg-slate-300 text-black px-10 py-5 flex flex-col gap-1 items-center justify-center" style="transform: translate({$pos.x}px, {$pos.y-100}px);">
+     <PopupFrame show={is_animating} {onAnimationComplete} >
       <p class='text-xs'>Rendering beginning...</p>
       <div class='flex w-full gap-2 items-center justify-center'>
         <IconParkOutlineLoadingThree class='animate-spin' />
@@ -178,7 +184,9 @@
           <div class="bg-blue-600 h-2.5 rounded-full" style="width: {$loadingbar}%"></div>
         </div>      
       </div>
-    </div>
+    </PopupFrame>  
   {/if}
+
+  <img alt='🔑 RELEASE_THE_LAST_SEAL' data-notes="Awesome image can be found here: https://www.deviantart.com/undeaddxll/art/Eldritch-Horror-Oracle-924979563" class='fixed top-0 left-0 pointer-events-none w-full h-auto min-w-[1080px]' style="opacity: {secrets_found > 0 ? (secrets_found * 0.05) : 0.02}"  src='https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/c4037587-3e55-4d20-aad2-d3c2f85d2941/dfapisr-a0d089d9-c919-4eba-a2d2-9c5345a49e64.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2M0MDM3NTg3LTNlNTUtNGQyMC1hYWQyLWQzYzJmODVkMjk0MVwvZGZhcGlzci1hMGQwODlkOS1jOTE5LTRlYmEtYTJkMi05YzUzNDVhNDllNjQuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.rxoNrjeIN9OYab_rhxq7poeNbIOYVhOhQyci55PZFnQ' />
 </div>
 

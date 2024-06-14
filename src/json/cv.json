@@ -2,7 +2,8 @@
   "list": [
     {
       "company": "METAFY",
-      "website": "https://metafy.gg",
+      "link": "https://metafy.gg",
+      "website": "metafy.gg",
       "tasks": [
         "Develop and maintain user-facing features for Metafy.gg's client-facing platform.",
         "Implement responsive designs using modern HTML, CSS, and JavaScript frameworks (Svelte, specifically).",
@@ -18,7 +19,8 @@
     },    
     {
       "company": "BEDE GAMING",
-      "website": "http://www.bedegaming.com",
+      "link": "http://www.bedegaming.com",
+      "website": "bedegaming.com",
       "tasks": [
         "Helped create a reusable component library with React for future Bede products.",
         "Developed a site for upcoming German clients.",
@@ -27,7 +29,8 @@
     },
     {
       "company": "JP MORGAN",
-      "website": "http://www.jpmorgan.com",
+      "link": "http://www.jpmorgan.com",
+      "website": "jpmorgan.com",
       "tasks": [
         "Architected a web app for the REPO, DCM, and Markets departments.",
         "Developed a JSON schema-driven, component-centric SPA using React.",
@@ -36,7 +39,8 @@
     },
     {
       "company": "EQTR",
-      "website": "http://www.eqtr.com",
+      "link": "http://www.eqtr.com",
+      "website": "eqtr.com",
       "tasks": [
         "Delivered several high-profile projects, including Belfry and Virgin Active.",
         "Retooled or refactored legacy projects using modern web tools and standards.",
@@ -47,7 +51,8 @@
     },
     {
       "company": "SKY",
-      "website": "http://www.sky.uk.co",
+      "link": "http://www.sky.uk.co",
+      "website": "sky.uk.co",
       "tasks": [
         "Developed a payment processing portal for an intrastore app using Aurelia.",
         "Created custom components to process big data from databases with hundreds of thousands of entries."
@@ -55,7 +60,8 @@
     },
     {
       "company": "SOCIAL RUGRATS INC (defunct)",
-      "website": "http://www.socialrugrats.com",
+      "link": "http://www.socialrugrats.com",
+      "website": "socialrugrats.com (defunct)",
       "tasks": [
         "Built the administrative portion of the site for +30 data entry personnel and 3 admins.",
         "Integrated proprietary APIs, set roles and permissions, handled image resizing and uploading, and optimized the site.",
@@ -64,7 +70,8 @@
     },
     {
       "company": "GOOD DONE GREAT",
-      "website": "http://www.gooddonegreat.com",
+      "link": "http://www.gooddonegreat.com",
+      "website": "gooddonegreat.com",
       "tasks": [
         "Shifted the company to an Angular-centric framework, modernizing the sales platform from its aging Rollbase infrastructure.",
         "Helped deliver up to $100K in contracts for major clients, including Toyota, Timken, Staples, and Monsanto.",
@@ -73,7 +80,8 @@
     },
     {
       "company": "GRAVITYJACK",
-      "website": "http://www.gravityjack.com",
+      "link": "http://www.gravityjack.com",
+      "website": "gravityjack.com",
       "tasks": [
         "Worked as the company's sole web developer on projects ranging from Wordpress sites to in-house projects.",
         "Developed AR (augmented reality) projects using Unity, deployed to Android and Apple devices."

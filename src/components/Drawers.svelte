@@ -158,20 +158,24 @@
     return is_expanded ? 'opacity-100 h-1' : 'opacity-20 h-14'
   }
 
+
 	$:{
-		if(previous_route !== $page.route.id && is_mounted){
-			previous_route = String($page.route.id)
-      window.location.hash = '';
-			setHtmlContent()
-		}
+    if(is_mounted){
+      if(previous_route !== $page.route.id){
+        previous_route = String($page.route.id)
+        window.location.hash = '';
+        setHtmlContent()
+      }
 
-		if(!$shouldRedraw && is_mounted){
-			handleResize()
-		}    
+      if(!$shouldRedraw && is_mounted){
+        handleResize()
+      }    
 
-    if($shouldReparse){      
-      setHtmlContent()
-    }    
+      if($shouldReparse){      
+        setHtmlContent()
+      }    
+    }
+  
  
 	}
 

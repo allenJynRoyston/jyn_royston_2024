@@ -148,11 +148,10 @@
 
 		if(JSON.stringify(previous_drawer_state) !== JSON.stringify($drawerState)){
 			previous_drawer_state = $drawerState
+			console.log('redraw....')
 			isHiddenVisible()
 			triggerRedraw(500)
 		}
-		
-
 	}	
 
 	function unlockSecret(){
@@ -225,6 +224,10 @@
 	<img class='absolute w-full h-full top-0 left-0 pointer-events-none  z-20 fade-in' alt='test' src={buffered_image} style="transform: translate(-3px, -5px); opacity: {$renderIsVisible ? 1 : 0.2}"/>
 {/if}
 
+<div class='absolute w-full h-full top-0 left-0 z-60 overflow-hidden pointer-events-none opacity-10'>
+	<img class='w-full h-full blur-sm animate-shake' src='https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/cc5c0386-cb1a-40d0-8404-0f2941bfa7aa/dg5mts0-2fe93bb9-54c5-402f-b5df-55daf4662c89.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2NjNWMwMzg2LWNiMWEtNDBkMC04NDA0LTBmMjk0MWJmYTdhYVwvZGc1bXRzMC0yZmU5M2JiOS01NGM1LTQwMmYtYjVkZi01NWRhZjQ2NjJjODkucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.KUBKjsJSzcOxiAyLAFmfENw-IXP04AJ-AYGwU6oBezs' alt="original found here: www.deviantart.com/grishamanimation1/art/CRT-shader-slot-mask-4K-976921920" />
+</div>
+
 <style lang='postcss'>
 	@keyframes fade-out {
 		0% {
@@ -239,7 +242,6 @@
 		animation: fade-out 700ms ease-in-out;
 	}
 
-
 	@keyframes fade-in {
 		0% {
 			opacity: 0;
@@ -249,21 +251,21 @@
 		}
 	}
 
-
 	.fade-in {
 		animation: fade-in 700ms ease;
 	}
-
 
   @keyframes shake {
     0% { transform: translateX(0); }
     25% { transform: translateX(0px); }
     50% { transform: translateY(0px); }
-    75% { transform: translateX(0px); }
+    75% { transform: translateX(-5px); }
     100% { transform: translateX(0); }
   }
 
   .animate-shake {
     animation: shake 100ms ease-in-out infinite;
   }
+
+
 </style>

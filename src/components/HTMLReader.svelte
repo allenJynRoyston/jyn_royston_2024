@@ -1,7 +1,7 @@
 <script lang='ts'>
   import { tick } from 'svelte'
   import { page } from '$app/stores';
-  import { linkColor, highlightColor, imgTagColor, bodyColor, drawerSidebarState, shouldRedraw, renderIsVisible } from '$stores/store'
+  import { linkColor, highlightColor, imgTagColor, bodyColor, drawerSidebarState, drawerSidebarContent, shouldRedraw, renderIsVisible } from '$stores/store'
 
   import CodeFormat from '$components/CodeFormat.svelte'
   import Render from '$components/Render.svelte';
@@ -13,8 +13,6 @@
 
   var dataset_is_updated:boolean = false
   var render:boolean = true
-  var sidebar_is_open:boolean = false
-  var sidebar_content:string | null = null
   var sidebar_is_busy:boolean = false
   var content_inner_html:string|null = null
  
@@ -77,28 +75,28 @@
     return `${str}-${$imgTagColor.color}-${$imgTagColor.weight}`
   }    
 
-  function viewImage(src:string){
+  async function viewImage(src:string){
+    
     if(!sidebar_is_busy){
       sidebar_is_busy = true
       setTimeout(() => {
         sidebar_is_busy = false
       }, 300)
-      if(sidebar_is_open && src === sidebar_content){
+      if($drawerSidebarState && src === $drawerSidebarContent){
         onSidebarClose()
         return
       }
-      sidebar_is_open = true
-      sidebar_content = src
+      
+      $drawerSidebarContent = src
       $drawerSidebarState = true
       $shouldRedraw = true
     }
   }
 
   function onSidebarClose(){
-    sidebar_is_open = false
+    $drawerSidebarState = false
     setTimeout(() => {
-      sidebar_content = null
-      $drawerSidebarState = false
+      $drawerSidebarContent = ""
       $shouldRedraw = true
     }, 50)
   }
@@ -111,7 +109,7 @@
 
 </script>
 
-<CodeFormat onSidebarClose={onSidebarClose} {sidebar_is_open} {sidebar_content} {container_height} {is_animating} {is_active}>
+<CodeFormat onSidebarClose={onSidebarClose} trackPosition={true} sidebar_is_open={$drawerSidebarState} sidebar_content={$drawerSidebarContent} {container_height} {is_animating} {is_active}>
   <!-- CONTENT -->
   <div id='html-content' slot='content'>
     {#if dataset_is_updated && render}
@@ -144,8 +142,8 @@
   <!-- SIDEBAR -->
   <div slot='sidebar'>
     <div class='flex'>
-      {#if sidebar_content !== null}
-        <img class='w-full' src={sidebar_content} alt={sidebar_content}/>
+      {#if $drawerSidebarContent !== ""}
+        <img class='w-full' src={$drawerSidebarContent} alt={$drawerSidebarContent}/>
       {/if}
     </div>
   </div>

@@ -18,6 +18,7 @@ export function fetchFromLocalStorage(key:string):any{
 
 
 // --------------------------
+export const pageScrollPosition = writable(0)
 export const renderIsVisible = writable(false)
 export const shouldRedraw = writable(false)
 export const shouldReparse = writable(false)
@@ -77,6 +78,7 @@ function createDrawerState(defaultState:Array<boolean> = [true, false, false]) {
 
 export const drawerState = createDrawerState()
 export const drawerSidebarState = writable(false)
+export const drawerSidebarContent = writable("")
 // --------------------------
 
 
@@ -146,9 +148,24 @@ function createCodeState(listData:Array<{label:string, var_type?:string}>) {
 	return {
 		subscribe,
 		set,
+		toggle: (key: string, ref: Array<RefItem>, new_val:boolean): Array<RefItem> => {
+			// update self
+			ref = ref.map((item:any) => ({
+				...item,
+				state: item.label === key ? new_val : item.state,
+      })) 
+	
+			// save changes
+			var stateMap = ref.map(({state}) => {return state})
+			saveToLocalStorage('code', stateMap)
+			set(ref)
+			// return
+			return ref
+		},		
     update: () => update((new_state) => {
 			var stateMap = new_state.map(({state}) => {return state})
 			saveToLocalStorage('code', stateMap)
+			set(new_state)
       return new_state;
     }),
 		reset: () => set(defaultState)
@@ -171,6 +188,11 @@ export const codeStateDict = derived(
 
 
 // --------------------------
+type RefItem = {
+  label: string;
+  state: boolean;
+};
+
 const consoleUnlockList:Array<{label:string}> = [
 	{label: "unlocked_unknown_progress"},
 	{label: "unlocked_music_player"},
@@ -191,9 +213,27 @@ function createConsoleUnlockedState(listData:Array<{label:string}>) {
 	return {
 		subscribe,
 		set,
+		unlock: (key: string, ref: Array<RefItem>): Array<RefItem> => {
+			// update self
+			ref = ref.map((item:any) => ({
+				...item,
+				state: item.label === key ? true : item.state,
+        
+      })) 
+			debugger
+			
+			// save changes
+			var stateMap = ref.map(({state}) => {return state})
+			saveToLocalStorage('console', stateMap)
+			set(ref)
+
+			// return
+			return ref
+		},
     update: () => update((new_state) => {
 			var stateMap = new_state.map(({state}) => {return state})
 			saveToLocalStorage('console', stateMap)
+			set(new_state)
       return new_state;
     }),
 		reset: () => set(defaultState)

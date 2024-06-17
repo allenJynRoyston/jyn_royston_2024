@@ -1,6 +1,6 @@
 <script lang='ts'>
-  import { onMount } from 'svelte'
-  import { codeState, consoleUnlockedState, modalState, consoleUnlockedStateDict } from '$stores/store'
+  import { onMount, tick } from 'svelte'
+  import { codeState, codeStateDict, consoleUnlockedState, modalState, consoleUnlockedStateDict } from '$stores/store'
   import CodeFormat from '$components/CodeFormat.svelte'
   import CarbonCloseOutline from '~icons/carbon/close-outline';
   import type { ModalContent } from '$stores/store'
@@ -46,11 +46,11 @@
       tag += `${var_type} *${label}* = !${state}! ?set_true_false? \n`
     });    
     
-    if($consoleUnlockedStateDict.unlocked_unknown_progress){
-      $consoleUnlockedState.forEach(({var_type = 'const', label, state}:any, index) => {
-        tag += `const *${state ? label : "[LOCKED]"}* = !${state ? state : '[LOCKED]'}! ?is_const? \n`
-      });        
-    }
+    // if($consoleUnlockedStateDict.unlocked_unknown_progress){
+    //   $consoleUnlockedState.forEach(({var_type = 'const', label, state}:any, index) => {
+    //     tag += `const *${state ? label : "[LOCKED]"}* = !${state ? state : '[LOCKED]'}! ?is_const? \n`
+    //   });        
+    // }
 
     linesArray = parseStyleText(tag)
   }
@@ -129,9 +129,10 @@
           },          
         ].map(item => ({
           ...item,
-          onClick: (val:any) => { 
-            $codeState[line].state = val
+          onClick: async(val:any) => {             
+            codeState.toggle($codeState[line].label, $codeState, val)
             codeState.update()
+            await tick()
             parseLines()
             showPopup = false 
           }

@@ -117,7 +117,6 @@
     is_animating = false
     opacity.set(1)
     pos.set({ x: 10, y: 0 });
-    $shouldRedraw = true
   }
 
 
@@ -187,6 +186,6 @@
     </PopupFrame>  
   {/if}
 
-  <img alt='🔑 RELEASE_THE_LAST_SEAL' data-notes="Awesome image can be found here: https://www.deviantart.com/undeaddxll/art/Eldritch-Horror-Oracle-924979563" class='fixed top-0 left-0 pointer-events-none w-full h-auto min-w-[1080px]' style="opacity: {secrets_found > 0 ? (secrets_found * 0.05) : 0.02}"  src='https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/c4037587-3e55-4d20-aad2-d3c2f85d2941/dfapisr-a0d089d9-c919-4eba-a2d2-9c5345a49e64.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2M0MDM3NTg3LTNlNTUtNGQyMC1hYWQyLWQzYzJmODVkMjk0MVwvZGZhcGlzci1hMGQwODlkOS1jOTE5LTRlYmEtYTJkMi05YzUzNDVhNDllNjQuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.rxoNrjeIN9OYab_rhxq7poeNbIOYVhOhQyci55PZFnQ' />
+  <img alt='🔑 RELEASE_THE_LAST_SEAL' data-notes="Awesome image can be found here: https://www.deviantart.com/undeaddxll/art/Eldritch-Horror-Oracle-924979563" class='fixed top-0 left-0 pointer-events-none w-full h-auto min-w-[1080px]' style="opacity: {secrets_found > 0 ? (secrets_found * 0.05) : 0.05}"  src='https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/c4037587-3e55-4d20-aad2-d3c2f85d2941/dfapisr-a0d089d9-c919-4eba-a2d2-9c5345a49e64.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2M0MDM3NTg3LTNlNTUtNGQyMC1hYWQyLWQzYzJmODVkMjk0MVwvZGZhcGlzci1hMGQwODlkOS1jOTE5LTRlYmEtYTJkMi05YzUzNDVhNDllNjQuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.rxoNrjeIN9OYab_rhxq7poeNbIOYVhOhQyci55PZFnQ' />
 </div>
 

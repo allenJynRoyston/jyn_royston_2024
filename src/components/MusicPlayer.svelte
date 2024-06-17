@@ -1,14 +1,14 @@
 <script lang='ts'>
   import {onMount, tick} from 'svelte'
   import {shouldRedraw, disableKeyboardInput, consoleUnlockedStateDict} from '$stores/store'
+  import {debounce} from '$utility/funcs'
   import IcBaselinePlayCircle from '~icons/ic/baseline-play-circle';
   import CarbonPauseOutline from '~icons/carbon/pause-outline';
   import CarbonCloseOutline from '~icons/carbon/close-outline';
-  import TablerSquareF2Filled from '~icons/tabler/square-f2-filled';
   import IcomoonFreeNext from '~icons/icomoon-free/next';
   import IcomoonFreePrevious from '~icons/icomoon-free/previous';  
   import IconParkOutlineLoadingThree from '~icons/icon-park-outline/loading-three';
-  import Console from './Console.svelte';
+
 
   type SoundCloudTrack = {
     id: number;
@@ -139,14 +139,6 @@
     setupSC()    
   }
 
-  // Function to debounce the shouldRedraw state update
-  function debounce(fn: Function, delay: number) {
-    let timer: number;
-    return function () {
-      clearTimeout(timer);
-      timer = setTimeout(fn, delay);
-    };
-  }
 
   $: {
     if (is_visible || !is_visible) {

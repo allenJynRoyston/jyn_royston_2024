@@ -4,6 +4,7 @@
   import CarbonCloseOutline from '~icons/carbon/close-outline'
   import TablerSquareF1Filled from '~icons/tabler/square-f1-filled';
   import {saveToLocalStorage, shouldRedraw, disableKeyboardInput, modalState, codeStateDict, consoleUnlockedState, consoleUnlockedStateDict} from '$stores/store'
+  import {debounce} from '$utility/funcs'
 
   let is_visible:boolean = false
   let input_content:string = ""
@@ -33,6 +34,8 @@
   }
 
   function checkForTriggers(){
+    console.log($consoleUnlockedState)
+    console.log($consoleUnlockedStateDict)
     switch(input_content){
       // ----------------------------------------------------
       case 'unlock music':
@@ -42,8 +45,7 @@
             label: "Unlock Music Player",    
             val: true,
             onClick: (val:any) => {
-              $consoleUnlockedState[1].state = true
-              consoleUnlockedState.update()
+              consoleUnlockedState.unlock("unlocked_music_player", $consoleUnlockedState)
               window.alert("Hit 'm' to open the music player.")
             }
           }]
@@ -72,8 +74,7 @@
             label: "I Hear The Call",    
             val: true,
             onClick: (_val:any) => {
-              $consoleUnlockedState[2].state = true
-              consoleUnlockedState.update()
+              consoleUnlockedState.unlock("unlocked_hidden_job", $consoleUnlockedState)
               window.alert("Something has changed...")
             }
           }]
@@ -96,7 +97,7 @@
               label: "An Ancient Dread Draws Near",   
               val: true,
               onClick: (_val:any) => {
-                $consoleUnlockedState[3].state = true
+                consoleUnlockedState.unlock("hidden_local_storage_key", $consoleUnlockedState)
                 consoleUnlockedState.update()
                 saveToLocalStorage("abyss", "🔑 THE_LOST_RITE_NEEDS_BLOOD")
                 window.alert("$x90x8[localStorage]-sd8f7X")
@@ -123,7 +124,7 @@
               label: "An Ancient Dread Draws Near",   
               val: true,
               onClick: (val:any) => {
-                $consoleUnlockedState[3].state = true
+                consoleUnlockedState.unlock("the_lost_ritual", $consoleUnlockedState)
                 consoleUnlockedState.update()
                 saveToLocalStorage("abyss", "🔑 THE_LOST_RITE_NEEDS_BLOOD")
                 window.alert("$x90x8[localStorage]-sd8f7X")
@@ -149,15 +150,6 @@
     debounce(() => {
       no_such_command = false
       }, 2000)();
-  }
-
-  // Function to debounce the shouldRedraw state update
-  function debounce(fn: Function, delay: number) {
-    let timer: number;
-    return function () {
-      clearTimeout(timer);
-      timer = setTimeout(fn, delay);
-    };
   }
 
   $: {

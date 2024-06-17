@@ -1,6 +1,10 @@
 <script lang='ts'>
+  import { onMount } from 'svelte';
+  import {drawerState, shouldRedraw, pageScrollPosition} from '$stores/store'
+  import {debounce} from '$utility/funcs'
   import Sidebar from '$components/Sidebar.svelte';
-
+  
+  export let trackPosition:boolean = false
   export let sidebar_is_open:boolean = false
   export let container_height:number = 0
   export let is_animating:boolean = false
@@ -8,15 +12,40 @@
   export let sidebar_content:string | null = null
   export let onSidebarClose: () => void = () => {}
 
-  let lines:Array<number> = new Array(90).fill(0)
-  
+  let scrollableElement:HTMLElement;
+  let lines:Array<number> = new Array(125).fill(0)
+
+  function updateScrollPosition(){
+    debounce(() => {      
+      if(scrollableElement !== null && $pageScrollPosition !== scrollableElement.scrollTop){
+        $pageScrollPosition = scrollableElement.scrollTop;    
+        $shouldRedraw = true
+      }
+    }, 500)();
+  };    
+
+  onMount(() => {
+    if(trackPosition){
+      scrollableElement.scrollTop = $pageScrollPosition
+      scrollableElement.addEventListener('scroll', updateScrollPosition);
+    }
+
+		return () => {
+      if(trackPosition){
+        $pageScrollPosition = scrollableElement.scrollTop;    
+			  window.removeEventListener('scroll', updateScrollPosition)
+      }
+		}   
+  });  
+
+
 
 </script>
 
 
 
-<div class='flex' >
-  <div class="h-full flex-grow  p-2 py-5 text-neutral-500 text-xs flex overflow-x-hidden {is_active ? 'overflow-y-auto' : 'overflow-y-hidden'}" style='max-height: {is_animating ? '100%' : `${container_height}px`}'>
+<div class='flex'>
+  <div bind:this={scrollableElement} class="h-full flex-grow  p-2 py-5 text-neutral-500 text-xs flex overflow-x-hidden {is_active ? 'overflow-y-auto' : 'overflow-y-hidden'}" style='max-height: {is_animating ? '100%' : `${container_height}px`}'>
     <ul class='flex flex-col gap-0'>
         {#each lines as _item, index}
           {#if index > 0}

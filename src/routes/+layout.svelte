@@ -147,8 +147,7 @@
 		}
 
 		if(JSON.stringify(previous_drawer_state) !== JSON.stringify($drawerState)){
-			previous_drawer_state = $drawerState
-			console.log('redraw....')
+			previous_drawer_state = $drawerState			
 			isHiddenVisible()
 			triggerRedraw(500)
 		}

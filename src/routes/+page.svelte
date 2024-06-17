@@ -17,7 +17,7 @@
 		hr
 		br
 		center
-			p.is_body Web Dev & Indie game developer			
+			p.is_body Web Dev and Indie game developer			
 			p.is_body Reliable ⭐ Creative ⭐ Innovative
 		hr
 		

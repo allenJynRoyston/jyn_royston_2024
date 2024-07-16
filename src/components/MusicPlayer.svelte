@@ -56,7 +56,6 @@
       await loadScript('https://w.soundcloud.com/player/api.js')
       setupSC()
       script_loaded = true
-      console.log("SC loaded correctly.")
     }
     catch(err){
       console.error("Error loading correctly.")

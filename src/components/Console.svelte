@@ -34,8 +34,6 @@
   }
 
   function checkForTriggers(){
-    console.log($consoleUnlockedState)
-    console.log($consoleUnlockedStateDict)
     switch(input_content){
       // ----------------------------------------------------
       case 'unlock music':
@@ -62,8 +60,6 @@
 
       // ----------------------------------------------------
       case 'OBLIVION_AWAITS_ALL':
-        console.log("here?")   
-
         $modalState.show = true      
         return
       // ----------------------------------------------------
